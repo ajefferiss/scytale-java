@@ -1,4 +1,4 @@
-package com.openmoments.scytale.authentication;
+package com.openmoments.scytale.config;
 
 import org.junit.jupiter.api.Test;
 
