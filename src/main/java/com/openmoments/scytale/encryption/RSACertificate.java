@@ -9,7 +9,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 public final class RSACertificate implements AsymmetricCertificate {
-    
+
     private static final int DEFAULT_KEY_SIZE = 4096;
     private static final String ALGORITHM = "RSA";
     private int keySize = DEFAULT_KEY_SIZE;
@@ -29,7 +29,7 @@ public final class RSACertificate implements AsymmetricCertificate {
     }
 
     /***
-     * Specify the key length to use when creating certificates, defaults to 2048bit
+     * Specify the key length to use when creating certificates, defaults to 4096 bits
      * @param keyLength Key length value to use
      * @return Instance of RSACertificate
      */
