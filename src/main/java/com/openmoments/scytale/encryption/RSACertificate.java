@@ -7,11 +7,9 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.logging.Logger;
 
 public final class RSACertificate implements AsymmetricCertificate {
-
-    private static final Logger LOGGER = Logger.getLogger(RSACertificate.class.getName());
+    
     private static final int DEFAULT_KEY_SIZE = 4096;
     private static final String ALGORITHM = "RSA";
     private int keySize = DEFAULT_KEY_SIZE;
