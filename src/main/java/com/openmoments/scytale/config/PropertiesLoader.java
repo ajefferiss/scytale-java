@@ -1,18 +1,13 @@
 package com.openmoments.scytale.config;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class PropertiesLoader {
-    private static final Logger LOGGER = Logger.getLogger(PropertiesLoader.class.getName());
     private static final String DEFAULT_PROPERITES = "./local.properties";
 
     private String propertiesFile = DEFAULT_PROPERITES;
-
-    public PropertiesLoader() {}
 
     public PropertiesLoader file(String propertiesFile) {
         this.propertiesFile = propertiesFile;

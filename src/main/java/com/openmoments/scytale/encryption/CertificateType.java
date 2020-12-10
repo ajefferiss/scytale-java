@@ -8,7 +8,7 @@ public enum CertificateType {
     RSA(RSACertificate::new);
 
     public final Supplier<AsymmetricCertificate> factory;
-    private CertificateType(Supplier<AsymmetricCertificate> factory) {
+    CertificateType(Supplier<AsymmetricCertificate> factory) {
         this.factory = requireNonNull(factory);
     }
 }
