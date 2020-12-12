@@ -13,6 +13,7 @@ class PropertiesLoaderTest {
     void shouldLoadLocalPropertiesByDefault() throws IOException {
         Properties testProperties = new PropertiesLoader().getProperties();
 
+        assertEquals("key", testProperties.getProperty("api.type"));
         assertEquals("MY API KEY", testProperties.getProperty("api.authentication"));
         assertEquals("https://localhost:8443/api/v1", testProperties.getProperty("api.url"));
     }

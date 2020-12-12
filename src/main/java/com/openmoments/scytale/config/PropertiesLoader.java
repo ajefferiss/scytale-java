@@ -14,7 +14,7 @@ public class PropertiesLoader {
         return this;
     }
 
-    Properties getProperties() throws IOException, IllegalArgumentException {
+    public Properties getProperties() throws IOException, IllegalArgumentException {
         return readProperties();
     }
 
