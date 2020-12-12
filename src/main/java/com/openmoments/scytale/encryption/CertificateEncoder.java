@@ -24,7 +24,7 @@ public final class CertificateEncoder {
      * @param keyPair The {@link java.security.KeyPair KeyPair} to be encoded
      * @return A map containing the encoded keys with the map keys of {@link KeyType KeyType}
      */
-    Map<KeyType, String> base64Encode(KeyPair keyPair) {
+    public Map<KeyType, String> base64Encode(KeyPair keyPair) {
         Map<KeyType, String> encodedKeys = new EnumMap<>(KeyType.class);
 
         if (keyPair == null) {
