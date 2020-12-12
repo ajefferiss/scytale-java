@@ -20,7 +20,8 @@ class PropertiesLoaderTest {
 
     @Test
     void shouldThrowWhenPropertiesMissing() {
-        Exception illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> new PropertiesLoader().file("invalid.properites").getProperties());
+        PropertiesLoader propertiesLoader = new PropertiesLoader().file("invalid.properties");
+        Exception illegalArgumentException = assertThrows(IllegalArgumentException.class, propertiesLoader::getProperties);
         String expectedMessage = "Scytale could not load properties file";
 
         assertTrue(illegalArgumentException.getMessage().contains(expectedMessage));
