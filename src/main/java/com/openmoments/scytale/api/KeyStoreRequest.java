@@ -19,7 +19,7 @@ public class KeyStoreRequest {
         this.apiRequest = apiRequest;
     }
 
-    String getById(Long id) throws InvalidKeystoreException, IOException, InterruptedException {
+    public String getById(Long id) throws InvalidKeystoreException, IOException, InterruptedException {
         if (Optional.ofNullable(id).orElse(0L) == 0L) {
             throw new IllegalArgumentException("Keystore ID cannot be empty");
         }
@@ -37,7 +37,7 @@ public class KeyStoreRequest {
         return getResponse.body();
     }
 
-    String post(String name) throws IOException, InterruptedException, InvalidKeystoreException {
+    public String post(String name) throws IOException, InterruptedException, InvalidKeystoreException {
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Keystore name cannot be empty");
         }
@@ -53,5 +53,16 @@ public class KeyStoreRequest {
         }
 
         return createResponse.body();
+    }
+
+    public String searchByName(String name) throws IOException, InterruptedException, InvalidKeystoreException {
+        String searchURL = KEYSTORE_URI + "/search?name=" + name;
+        HttpResponse<String> searchResponse = apiRequest.get(searchURL, null);
+
+        if (searchResponse.statusCode() != 200) {
+            throw new InvalidKeystoreException("API Response failed with " + searchResponse.body());
+        }
+
+        return searchResponse.body();
     }
 }

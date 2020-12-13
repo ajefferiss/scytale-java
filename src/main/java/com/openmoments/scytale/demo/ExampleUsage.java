@@ -21,9 +21,10 @@ public class ExampleUsage implements APIRequestCallback {
     public static void main(String[] args) {
         ExampleUsage examples = new ExampleUsage();
 
-        examples.saveToFileAsString();
+        /*examples.saveToFileAsString();
         KeyStore keyStore = examples.createNewKeyStore();
-        examples.getKeyStore(keyStore.getId());
+        examples.getKeyStore(keyStore.getId());*/
+        examples.searchKeyStore("test@gmail.com");
     }
 
     void saveToFileAsString() {
@@ -62,7 +63,16 @@ public class ExampleUsage implements APIRequestCallback {
             KeyStore retrievedKeySTore = new KeyStoreCreator().apiRequest(new Request()).id(id).byId();
             LOG.log(Level.INFO, "Retrieved keystore {0}", String.valueOf(retrievedKeySTore));
         } catch (IOException | InterruptedException | InvalidKeystoreException e) {
-            LOG.log(Level.SEVERE, "Failed to retrieve keystore");
+            LOG.log(Level.SEVERE, "Failed to retrieve keystore", e);
+        }
+    }
+
+    void searchKeyStore(String name) {
+        try {
+            String response = new KeyStoreRequest(new Request()).searchByName(name);
+            LOG.log(Level.INFO, "Retrieved {0}", response);
+        } catch (InterruptedException | IOException | InvalidKeystoreException e) {
+            LOG.log(Level.SEVERE, "Failed to search for keystore", e);
         }
     }
 
