@@ -58,7 +58,7 @@ public class KeyStoreCreator {
 
     /***
      * Return a specific keystore
-     * @return {@link KeyStore KeySTore}
+     * @return {@link KeyStore KeyStore}
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws IllegalArgumentException - If the id passed is empty
      * @throws InterruptedException - If the API operation is interrupted
