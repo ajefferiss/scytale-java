@@ -22,33 +22,36 @@ public class Request implements APIRequest {
 
     @Override
     public HttpResponse<String> get(String uri, APIRequestCallback callbacks) throws IOException, InterruptedException {
-        String authType = properties.getProperty("api.type");
-
-        request = HttpRequest.newBuilder().uri(URI.create(getAPIURL(uri)));
-        request.header("Content-Type", "application/json");
-
-        if (authType != null && authType.equalsIgnoreCase("key")) {
-            request.header(AUTHENTICATION_KEY_HEADER, properties.get("api.authentication").toString());
-        }
-
+        createRequest(uri);
         request.GET();
+
         return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
     @Override
     public HttpResponse<String> post(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
+        createRequest(uri);
+        request.POST(HttpRequest.BodyPublishers.ofString(json.toString()));
+
+        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    @Override
+    public HttpResponse<String> put(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
+        createRequest(uri);
+        request.PUT(HttpRequest.BodyPublishers.ofString(json.toString()));
+
+        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    private void createRequest(String uri) {
         String authType = properties.getProperty("api.type");
 
         request = HttpRequest.newBuilder().uri(URI.create(getAPIURL(uri)));
         request.header("Content-Type", "application/json");
-
         if (authType != null && authType.equalsIgnoreCase("key")) {
             request.header(AUTHENTICATION_KEY_HEADER, properties.get("api.authentication").toString());
         }
-
-        request.POST(HttpRequest.BodyPublishers.ofString(json.toString()));
-
-        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
     private String getAPIURL(String uri) {
