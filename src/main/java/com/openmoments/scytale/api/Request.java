@@ -21,6 +21,11 @@ public class Request implements APIRequest {
     }
 
     @Override
+    public HttpResponse<String> get(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
+        return null;
+    }
+
+    @Override
     public HttpResponse<String> post(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
         String authType = properties.getProperty("api.type");
 
