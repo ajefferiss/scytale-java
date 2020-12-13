@@ -13,7 +13,13 @@ public class KeyStoreRequest {
     protected static final String KEYSTORE_NAME_ATTR = "name";
     protected static final String KEYSTORE_URI = "keystores";
 
-    String getById(Long id, APIRequest apiRequest) throws InvalidKeystoreException, IOException, InterruptedException {
+    private APIRequest apiRequest;
+
+    public KeyStoreRequest(APIRequest apiRequest) {
+        this.apiRequest = apiRequest;
+    }
+
+    String getById(Long id) throws InvalidKeystoreException, IOException, InterruptedException {
         if (Optional.ofNullable(id).orElse(0L) == 0L) {
             throw new IllegalArgumentException("Keystore ID cannot be empty");
         }
@@ -31,7 +37,7 @@ public class KeyStoreRequest {
         return getResponse.body();
     }
 
-    String post(String name, APIRequest apiRequest) throws IOException, InterruptedException, InvalidKeystoreException {
+    String post(String name) throws IOException, InterruptedException, InvalidKeystoreException {
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Keystore name cannot be empty");
         }

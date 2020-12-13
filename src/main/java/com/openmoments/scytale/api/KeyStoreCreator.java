@@ -54,8 +54,8 @@ public class KeyStoreCreator {
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
     public KeyStore create() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        KeyStoreRequest keyStoreRequest = new KeyStoreRequest();
-        return fromJSON(new JSONObject(keyStoreRequest.post(this.name, this.apiRequest)));
+        KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
+        return fromJSON(new JSONObject(keyStoreRequest.post(this.name)));
     }
 
     /***
@@ -67,8 +67,8 @@ public class KeyStoreCreator {
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
     public KeyStore byId() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        KeyStoreRequest keyStoreRequest = new KeyStoreRequest();
-        return fromJSON(new JSONObject(keyStoreRequest.getById(this.id, apiRequest)));
+        KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
+        return fromJSON(new JSONObject(keyStoreRequest.getById(this.id)));
     }
 
     /***
