@@ -74,7 +74,7 @@ public class KeyStoreCreator {
      * @param json JSON to create KeyStore from
      * @return {@link KeyStore KeyStore}
      */
-    private KeyStore fromJSON(JSONObject json) {
+    public KeyStore fromJSON(JSONObject json) {
         this.id = json.getLong(KeyStoreRequest.KEYSTORE_ID_ATTR);
         this.name = json.getString(KeyStoreRequest.KEYSTORE_NAME_ATTR);
         return new KeyStore(this.id, this.name);
