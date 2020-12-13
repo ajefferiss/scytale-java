@@ -4,8 +4,6 @@ import com.openmoments.scytale.exception.InvalidKeystoreException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.http.HttpResponse;
-import java.util.Optional;
 
 public class KeyStoreCreator {
 
@@ -55,7 +53,7 @@ public class KeyStoreCreator {
      */
     public KeyStore create() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
         KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
-        return fromJSON(new JSONObject(keyStoreRequest.post(this.name)));
+        return fromJSON(new JSONObject(keyStoreRequest.createKeyStore(this.name)));
     }
 
     /***

@@ -37,7 +37,7 @@ public class KeyStoreRequest {
         return getResponse.body();
     }
 
-    public String post(String name) throws IOException, InterruptedException, InvalidKeystoreException {
+    public String createKeyStore(String name) throws IOException, InterruptedException, InvalidKeystoreException {
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Keystore name cannot be empty");
         }
