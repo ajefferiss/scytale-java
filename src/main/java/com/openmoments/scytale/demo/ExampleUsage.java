@@ -57,7 +57,7 @@ public class ExampleUsage implements APIRequestCallback {
         return null;
     }
 
-    void getKeyStore(Integer id) {
+    void getKeyStore(Long id) {
         try {
             KeyStore retrievedKeySTore = new KeyStoreCreator().apiRequest(new Request()).id(id).byId();
             LOG.log(Level.INFO, "Retrieved keystore {0}", String.valueOf(retrievedKeySTore));

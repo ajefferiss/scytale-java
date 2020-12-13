@@ -13,7 +13,7 @@ public class KeyStoreCreator {
     protected static final String KEYSTORE_NAME_ATTR = "name";
     protected static final String KEYSTORE_URI = "keystores";
 
-    private Integer id;
+    private Long id;
     private String name;
     private APIRequest apiRequest;
 
@@ -34,7 +34,7 @@ public class KeyStoreCreator {
      * @param id ID of the KeyStore returned previously by the API
      * @return {@link KeyStoreCreator KeyStoreCreator}
      */
-    public KeyStoreCreator id(Integer id) {
+    public KeyStoreCreator id(Long id) {
         this.id = id;
         return this;
     }

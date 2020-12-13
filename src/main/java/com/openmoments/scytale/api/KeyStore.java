@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public final class KeyStore {
 
-    private Integer id;
+    private Long id;
     private String name;
 
-    public KeyStore(Integer id, String name) {
+    public KeyStore(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
