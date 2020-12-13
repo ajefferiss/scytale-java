@@ -81,12 +81,12 @@ public class KeyStoreCreator {
     }
 
     /***
-     *
-     * @return
-     * @throws IllegalArgumentException
-     * @throws InvalidKeystoreException
-     * @throws IOException
-     * @throws InterruptedException
+     * Return a specific keystore
+     * @return {@link KeyStore KeySTore}
+     * @throws IOException - If an I/O error occurs when sending or receiving API requests
+     * @throws IllegalArgumentException - If the id passed is empty
+     * @throws InterruptedException - If the API operation is interrupted
+     * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
     public KeyStore get() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
         if (Optional.ofNullable(id).orElse(0) == 0) {
