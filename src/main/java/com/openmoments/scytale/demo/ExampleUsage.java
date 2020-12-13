@@ -59,7 +59,7 @@ public class ExampleUsage implements APIRequestCallback {
 
     void getKeyStore(Integer id) {
         try {
-            KeyStore retrievedKeySTore = new KeyStoreCreator().apiRequest(new Request()).id(id).get();
+            KeyStore retrievedKeySTore = new KeyStoreCreator().apiRequest(new Request()).id(id).byId();
             LOG.log(Level.INFO, "Retrieved keystore {0}", String.valueOf(retrievedKeySTore));
         } catch (IOException | InterruptedException | InvalidKeystoreException e) {
             LOG.log(Level.SEVERE, "Failed to retrieve keystore");

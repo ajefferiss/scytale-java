@@ -88,7 +88,7 @@ public class KeyStoreCreator {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
-    public KeyStore get() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
+    public KeyStore byId() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
         if (Optional.ofNullable(id).orElse(0) == 0) {
             throw new IllegalArgumentException("Keystore ID cannot be empty");
         }
