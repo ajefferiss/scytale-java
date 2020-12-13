@@ -1,4 +1,4 @@
-package com.openmoments.scytale.api;
+package com.openmoments.scytale.entities;
 
 import java.util.Objects;
 
