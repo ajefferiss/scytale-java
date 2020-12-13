@@ -1,9 +1,6 @@
 package com.openmoments.scytale.demo;
 
-import com.openmoments.scytale.api.APIRequest;
-import com.openmoments.scytale.api.APIRequestCallback;
-import com.openmoments.scytale.api.KeyStore;
-import com.openmoments.scytale.api.Request;
+import com.openmoments.scytale.api.*;
 import com.openmoments.scytale.encryption.CertificateEncoder;
 import com.openmoments.scytale.encryption.CertificateFactory;
 import com.openmoments.scytale.encryption.CertificateType;
@@ -50,7 +47,7 @@ public class ExampleUsage implements APIRequestCallback {
             String newID = "test@gmail.com";
             APIRequest apiRequest = new Request();
 
-            KeyStore newKeystore = new KeyStore(apiRequest).create(newID);
+            KeyStore newKeystore = new KeyStoreCreator().apiRequest(apiRequest).name(newID).create();
             LOG.log(Level.INFO, "Create a new keystore for {0} of {1}", new String[]{newID, String.valueOf(newKeystore)});
         } catch (IOException | InterruptedException | InvalidKeystoreException e) {
             LOG.log(Level.SEVERE, "Failed to create new keystore", e);
