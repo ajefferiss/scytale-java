@@ -22,7 +22,8 @@ public class ExampleUsage implements APIRequestCallback {
         ExampleUsage examples = new ExampleUsage();
 
         examples.saveToFileAsString();
-        examples.createNewKeyStore();
+        KeyStore keyStore = examples.createNewKeyStore();
+        examples.getKeyStore(keyStore.getId());
     }
 
     void saveToFileAsString() {
@@ -42,15 +43,26 @@ public class ExampleUsage implements APIRequestCallback {
         }
     }
 
-    void createNewKeyStore() {
+    KeyStore createNewKeyStore() {
         try {
             String newID = "test@gmail.com";
             APIRequest apiRequest = new Request();
 
             KeyStore newKeystore = new KeyStoreCreator().apiRequest(apiRequest).name(newID).create();
             LOG.log(Level.INFO, "Create a new keystore for {0} of {1}", new String[]{newID, String.valueOf(newKeystore)});
+            return newKeystore;
         } catch (IOException | InterruptedException | InvalidKeystoreException e) {
             LOG.log(Level.SEVERE, "Failed to create new keystore", e);
+        }
+        return null;
+    }
+
+    void getKeyStore(Integer id) {
+        try {
+            KeyStore retrievedKeySTore = new KeyStoreCreator().apiRequest(new Request()).id(id).get();
+            LOG.log(Level.INFO, "Retrieved keystore {0}", String.valueOf(retrievedKeySTore));
+        } catch (IOException | InterruptedException | InvalidKeystoreException e) {
+            LOG.log(Level.SEVERE, "Failed to retrieve keystore");
         }
     }
 

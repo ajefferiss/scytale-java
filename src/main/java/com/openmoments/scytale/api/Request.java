@@ -21,20 +21,25 @@ public class Request implements APIRequest {
     }
 
     @Override
-    public HttpResponse<String> get(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
-        return null;
+    public HttpResponse<String> get(String uri, APIRequestCallback callbacks) throws IOException, InterruptedException {
+        String authType = properties.getProperty("api.type");
+
+        request = HttpRequest.newBuilder().uri(URI.create(getAPIURL(uri)));
+        request.header("Content-Type", "application/json");
+
+        if (authType != null && authType.equalsIgnoreCase("key")) {
+            request.header(AUTHENTICATION_KEY_HEADER, properties.get("api.authentication").toString());
+        }
+
+        request.GET();
+        return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
     @Override
     public HttpResponse<String> post(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException {
         String authType = properties.getProperty("api.type");
 
-        StringBuilder apiURL = new StringBuilder();
-        apiURL.append(properties.getProperty("api.url").replaceAll("/+$", ""));
-        apiURL.append("/");
-        apiURL.append(uri.replaceAll("^/+", ""));
-
-        request = HttpRequest.newBuilder().uri(URI.create(apiURL.toString()));
+        request = HttpRequest.newBuilder().uri(URI.create(getAPIURL(uri)));
         request.header("Content-Type", "application/json");
 
         if (authType != null && authType.equalsIgnoreCase("key")) {
@@ -46,4 +51,12 @@ public class Request implements APIRequest {
         return client.send(request.build(), HttpResponse.BodyHandlers.ofString());
     }
 
+    private String getAPIURL(String uri) {
+        StringBuilder apiURL = new StringBuilder();
+        apiURL.append(properties.getProperty("api.url").replaceAll("/+$", ""));
+        apiURL.append("/");
+        apiURL.append(uri.replaceAll("^/+", ""));
+
+        return apiURL.toString();
+    }
 }

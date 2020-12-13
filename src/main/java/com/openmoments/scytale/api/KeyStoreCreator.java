@@ -80,22 +80,25 @@ public class KeyStoreCreator {
         return new KeyStore(this.id, this.name);
     }
 
+    /***
+     *
+     * @return
+     * @throws IllegalArgumentException
+     * @throws InvalidKeystoreException
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public KeyStore get() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        if (Optional.ofNullable(id).orElse(0) != 0) {
+        if (Optional.ofNullable(id).orElse(0) == 0) {
             throw new IllegalArgumentException("Keystore ID cannot be empty");
-        }
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Keystore name cannot be empty");
         }
         if (apiRequest == null) {
             throw  new IllegalArgumentException("API Request interface is required");
         }
 
-        JSONObject getJSON = new JSONObject()
-                .put(KEYSTORE_ID_ATTR, id)
-                .put(KEYSTORE_NAME_ATTR, name);
-        HttpResponse<String> createResponse = apiRequest.get(KEYSTORE_URI, getJSON, null);
+        String getURL = KEYSTORE_URI + "/" + id;
 
+        HttpResponse<String> createResponse = apiRequest.get(getURL,null);
         if (createResponse.statusCode() != 200) {
             throw new InvalidKeystoreException("API response failed with " + createResponse.body());
         }
