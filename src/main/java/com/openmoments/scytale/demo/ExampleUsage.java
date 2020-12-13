@@ -4,7 +4,9 @@ import com.openmoments.scytale.api.*;
 import com.openmoments.scytale.encryption.CertificateEncoder;
 import com.openmoments.scytale.encryption.CertificateFactory;
 import com.openmoments.scytale.encryption.CertificateType;
+import com.openmoments.scytale.entities.KeyStore;
 import com.openmoments.scytale.exception.InvalidKeystoreException;
+import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,16 +17,17 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ExampleUsage implements APIRequestCallback {
+public class ExampleUsage {
     private static final Logger LOG = Logger.getLogger(ExampleUsage.class.getName());
 
     public static void main(String[] args) {
         ExampleUsage examples = new ExampleUsage();
 
-        /*examples.saveToFileAsString();
+        examples.saveToFileAsString();
         KeyStore keyStore = examples.createNewKeyStore();
-        examples.getKeyStore(keyStore.getId());*/
+        examples.getKeyStore(keyStore.getId());
         examples.searchKeyStore("test@gmail.com");
+        examples.updateKeyStore("test@gmail.com", "updated-test@gmail.com");
     }
 
     void saveToFileAsString() {
@@ -76,13 +79,16 @@ public class ExampleUsage implements APIRequestCallback {
         }
     }
 
-    @Override
-    public void onSuccess(HttpResponse<String> response) {
+    void updateKeyStore(String name, String updatedName) {
+        try {
+            KeyStore foundKeyStore = new KeyStoreCreator().apiRequest(new Request()).name(name).byName();
+            KeyStore updatedKeyStore = new KeyStore(foundKeyStore.getId(), updatedName);
+            String response = new KeyStoreRequest(new Request()).updateKeyStore(updatedKeyStore);
+            updatedKeyStore = new KeyStoreCreator().fromJSON(new JSONObject(response));
 
-    }
-
-    @Override
-    public void onError(HttpResponse<String> error) {
-
+            LOG.log(Level.INFO, "Updated from " + String.valueOf(foundKeyStore) + " to " + String.valueOf(updatedKeyStore));
+        } catch (InterruptedException | IOException | InvalidKeystoreException e) {
+            LOG.log(Level.SEVERE, "Failed to search for keystore", e);
+        }
     }
 }
