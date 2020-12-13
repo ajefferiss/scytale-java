@@ -9,10 +9,6 @@ import java.util.Optional;
 
 public class KeyStoreCreator {
 
-    protected static final String KEYSTORE_ID_ATTR = "id";
-    protected static final String KEYSTORE_NAME_ATTR = "name";
-    protected static final String KEYSTORE_URI = "keystores";
-
     private Long id;
     private String name;
     private APIRequest apiRequest;
@@ -58,26 +54,8 @@ public class KeyStoreCreator {
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
     public KeyStore create() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Keystore name cannot be empty");
-        }
-        if (apiRequest == null) {
-            throw  new IllegalArgumentException("API Request interface is required");
-        }
-
-        JSONObject createJson = new JSONObject().put(KEYSTORE_NAME_ATTR, name);
-        HttpResponse<String> createResponse = apiRequest.post(KEYSTORE_URI, createJson, null);
-
-        if (createResponse.statusCode() != 200) {
-            throw new InvalidKeystoreException("API response failed with " + createResponse.body());
-        }
-
-        JSONObject createdKeystore = new JSONObject(createResponse.body());
-
-        this.id = createdKeystore.getInt(KEYSTORE_ID_ATTR);
-        this.name = createdKeystore.getString(KEYSTORE_NAME_ATTR);
-
-        return new KeyStore(this.id, this.name);
+        KeyStoreRequest keyStoreRequest = new KeyStoreRequest();
+        return fromJSON(new JSONObject(keyStoreRequest.post(this.name, this.apiRequest)));
     }
 
     /***
@@ -89,25 +67,18 @@ public class KeyStoreCreator {
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
     public KeyStore byId() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        if (Optional.ofNullable(id).orElse(0) == 0) {
-            throw new IllegalArgumentException("Keystore ID cannot be empty");
-        }
-        if (apiRequest == null) {
-            throw  new IllegalArgumentException("API Request interface is required");
-        }
+        KeyStoreRequest keyStoreRequest = new KeyStoreRequest();
+        return fromJSON(new JSONObject(keyStoreRequest.getById(this.id, apiRequest)));
+    }
 
-        String getURL = KEYSTORE_URI + "/" + id;
-
-        HttpResponse<String> createResponse = apiRequest.get(getURL,null);
-        if (createResponse.statusCode() != 200) {
-            throw new InvalidKeystoreException("API response failed with " + createResponse.body());
-        }
-
-        JSONObject retrievedKeyStore = new JSONObject(createResponse.body());
-
-        this.id = retrievedKeyStore.getInt(KEYSTORE_ID_ATTR);
-        this.name = retrievedKeyStore.getString(KEYSTORE_NAME_ATTR);
-
+    /***
+     * Create a keystore from a valid JSON object
+     * @param json JSON to create KeyStore from
+     * @return {@link KeyStore KeyStore}
+     */
+    private KeyStore fromJSON(JSONObject json) {
+        this.id = json.getLong(KeyStoreRequest.KEYSTORE_ID_ATTR);
+        this.name = json.getString(KeyStoreRequest.KEYSTORE_NAME_ATTR);
         return new KeyStore(this.id, this.name);
     }
 }
