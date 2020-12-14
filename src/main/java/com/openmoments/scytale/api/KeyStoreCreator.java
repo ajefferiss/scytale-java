@@ -3,6 +3,7 @@ package com.openmoments.scytale.api;
 import com.openmoments.scytale.entities.KeyStore;
 import com.openmoments.scytale.exception.InvalidKeystoreException;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -11,17 +12,20 @@ import java.util.stream.StreamSupport;
 
 public class KeyStoreCreator {
 
-    private Long id;
-    private String name;
-    private APIRequest apiRequest;
+    private static final Long DEFAULT_ID = -1L;
+    private static final String DEFAULT_NAME = "";
+
+    private Long id = DEFAULT_ID;
+    private String name = DEFAULT_NAME;
+    private KeyStoreRequest keyStoreRequest;
 
     /***
-     * Sets the implementation of the {@link APIRequest APIRequest} interface
-     * @param apiRequest Implementation of the {@link APIRequest APIRequest}
+     * Set the {@link KeyStoreRequest KeyStoreRequest} to handle API queries
+     * @param {@link keyStoreRequest KeyStoreRequest} API handler to use
      * @return {@link KeyStoreCreator KeyStoreCreator}
      */
-    public KeyStoreCreator apiRequest(APIRequest apiRequest) {
-        this.apiRequest = apiRequest;
+    public KeyStoreCreator request(KeyStoreRequest keyStoreRequest) {
+        this.keyStoreRequest = keyStoreRequest;
         return this;
     }
 
@@ -49,12 +53,10 @@ public class KeyStoreCreator {
      * Creates a new Keystore instance for the specified user.
      * @return {@link KeyStore KeyStore}
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
-     * @throws IllegalArgumentException - If the id passed is empty
      * @throws InterruptedException - If the API operation is interrupted
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
-    public KeyStore create() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
+    public KeyStore create() throws InterruptedException, InvalidKeystoreException, IOException {
         return fromJSON(new JSONObject(keyStoreRequest.createKeyStore(this.name)));
     }
 
@@ -62,12 +64,10 @@ public class KeyStoreCreator {
      * Return a specific keystore
      * @return {@link KeyStore KeyStore}
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
-     * @throws IllegalArgumentException - If the id passed is empty
      * @throws InterruptedException - If the API operation is interrupted
      * @throws InvalidKeystoreException - If the Keystore was not created correctly
      */
-    public KeyStore byId() throws IllegalArgumentException, InvalidKeystoreException, IOException, InterruptedException {
-        KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
+    public KeyStore byId() throws InterruptedException, InvalidKeystoreException, IOException {
         return fromJSON(new JSONObject(keyStoreRequest.getById(this.id)));
     }
 
@@ -79,7 +79,6 @@ public class KeyStoreCreator {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      */
     public KeyStore byName() throws InterruptedException, InvalidKeystoreException, IOException {
-        KeyStoreRequest keyStoreRequest = new KeyStoreRequest(apiRequest);
         JSONArray foundByName = new JSONArray(keyStoreRequest.searchByName(this.name));
 
         Optional<JSONObject> jsonObject = StreamSupport.stream(foundByName.spliterator(), false)
