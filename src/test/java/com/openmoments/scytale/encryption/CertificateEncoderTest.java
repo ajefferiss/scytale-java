@@ -1,6 +1,7 @@
 package com.openmoments.scytale.encryption;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.security.KeyPair;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Certificate Encoder")
 class CertificateEncoderTest {
 
     private CertificateEncoder certificateEncoder;
@@ -19,11 +21,13 @@ class CertificateEncoderTest {
     }
 
     @Test
+    @DisplayName("Should return empty when null passed")
     void shouldReturnEmptyListWhenNull() {
         assertTrue(certificateEncoder.base64Encode(null).isEmpty());
     }
 
     @Test
+    @DisplayName("Should base64 encode RSA Certificate")
     void shouldReturnRSAKeys() throws NoSuchAlgorithmException {
         KeyPair keyPair = new CertificateFactory().get(CertificateType.RSA).generateKeyPair();
         assertNotNull(keyPair);

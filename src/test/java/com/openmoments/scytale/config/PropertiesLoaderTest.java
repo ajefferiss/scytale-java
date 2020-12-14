@@ -1,5 +1,6 @@
 package com.openmoments.scytale.config;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -7,9 +8,11 @@ import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Property Loader")
 class PropertiesLoaderTest {
 
     @Test
+    @DisplayName("Should use default file")
     void shouldLoadLocalPropertiesByDefault() throws IOException {
         Properties testProperties = new PropertiesLoader().getProperties();
 
@@ -19,6 +22,7 @@ class PropertiesLoaderTest {
     }
 
     @Test
+    @DisplayName("Show throw when properties missing")
     void shouldThrowWhenPropertiesMissing() {
         PropertiesLoader propertiesLoader = new PropertiesLoader().file("invalid.properties");
         Exception illegalArgumentException = assertThrows(IllegalArgumentException.class, propertiesLoader::getProperties);

@@ -1,5 +1,6 @@
 package com.openmoments.scytale.encryption;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -15,9 +16,11 @@ import java.security.spec.InvalidKeySpecException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("RSA Certficiate")
 class RSACertificateTest {
 
     @Test
+    @DisplayName("Should create key pair")
     void shouldGenerateCertificate() throws NoSuchAlgorithmException {
         KeyPair keyPair = new RSACertificate().generateKeyPair();
 
@@ -27,6 +30,7 @@ class RSACertificateTest {
     }
 
     @Test
+    @DisplayName("Should use specified key length")
     void shouldGenerateCertificateWithKeyLength() throws NoSuchAlgorithmException {
         KeyPair keyPair = new RSACertificate().length(1024).generateKeyPair();
         RSAPrivateKey privateKey = (RSAPrivateKey)keyPair.getPrivate();
@@ -36,6 +40,7 @@ class RSACertificateTest {
     }
 
     @Test
+    @DisplayName("Should create new cert to stream")
     void shouldWriteKeysToStreams(@TempDir Path tempDir) throws IOException, NoSuchAlgorithmException {
         Path keyPath = tempDir.resolve("test.key");
         Path pubPath = tempDir.resolve("test.pub");
@@ -49,6 +54,7 @@ class RSACertificateTest {
     }
 
     @Test
+    @DisplayName("Should load cert from streams")
     void shouldLoadKeysFromStreams(@TempDir Path tempDir) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         Path keyPath = tempDir.resolve("test.key");
         Path pubPath = tempDir.resolve("test.pub");
