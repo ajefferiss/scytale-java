@@ -115,8 +115,8 @@ public class KeyStoreRequest {
     }
 
     private void validateID(Long id) {
-        if (Optional.ofNullable(id).orElse(0L) == 0L) {
-            throw new IllegalArgumentException("Keystore ID cannot be empty");
+        if (Optional.ofNullable(id).orElse(0L) <= 0L) {
+            throw new IllegalArgumentException("Keystore ID must be positive integer");
         }
     }
 
