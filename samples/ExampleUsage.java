@@ -1,4 +1,4 @@
-package com.openmoments.scytale.demo;
+package com.openmoments.scytaleexample;
 
 import com.openmoments.scytale.api.*;
 import com.openmoments.scytale.encryption.CertificateEncoder;
@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -86,7 +85,7 @@ public class ExampleUsage {
             String response = new KeyStoreRequest(new Request()).updateKeyStore(updatedKeyStore);
             updatedKeyStore = new KeyStoreCreator().fromJSON(new JSONObject(response));
 
-            LOG.log(Level.INFO, "Updated from " + String.valueOf(foundKeyStore) + " to " + String.valueOf(updatedKeyStore));
+            LOG.log(Level.INFO, "Updated from {0} to {1}", String.valueOf(foundKeyStore), String.valueOf(updatedKeyStore));
         } catch (InterruptedException | IOException | InvalidKeystoreException e) {
             LOG.log(Level.SEVERE, "Failed to search for keystore", e);
         }
