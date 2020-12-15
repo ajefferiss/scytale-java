@@ -11,6 +11,11 @@ public final class PublicKey {
         this.publicKey = publicKey;
     }
 
+    public PublicKey(String publicKey) {
+        this.id = -1L;
+        this.publicKey = publicKey;
+    }
+
     public Long getId() {
         return id;
     }
@@ -30,5 +35,10 @@ public final class PublicKey {
     @Override
     public int hashCode() {
         return Objects.hash(id, publicKey);
+    }
+
+    @Override
+    public String toString() {
+        return "PublicKey{" + "id=" + id + ", publicKey='" + publicKey + "'}";
     }
 }
