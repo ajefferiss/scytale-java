@@ -3,9 +3,16 @@ package com.openmoments.scytale.api;
 import com.openmoments.scytale.entities.KeyStore;
 import com.openmoments.scytale.entities.PublicKey;
 import com.openmoments.scytale.exception.ScytaleException;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class PublicKeyRequest extends ScytaleRequest {
     private static final String KEYS_URI_FORMAT = KeyStoreRequest.KEYSTORE_URI + "/%d/keys";
@@ -29,10 +36,21 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    public String getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
+    public List<PublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
         String getURL = String.format(KEYS_URI_FORMAT, keyStore.getId());
 
-        return this.get(getURL);
+        JSONArray apiResult = new JSONArray(this.get(getURL));
+        List<JSONObject> jsonObjects = StreamSupport.stream(apiResult.spliterator(), false)
+                .map(JSONObject.class::cast)
+                .collect(Collectors.toList());
+
+        if (jsonObjects.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return jsonObjects.stream()
+                .map(o -> new PublicKey(o.getLong(ID_ATTR), o.getString(PUBLIC_KEY_ATTR)))
+                .collect(Collectors.toList());
     }
 
     /***
