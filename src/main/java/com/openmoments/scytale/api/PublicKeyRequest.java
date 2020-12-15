@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,10 +32,10 @@ public class PublicKeyRequest extends ScytaleRequest {
     /***
      * Retrieve all keys associated with a keystore
      * @param keyStore {@link KeyStore KeyStore} to retriever keys for
-     * @return {@link String String} containing JSON result from API
+     * @return {@link List List} of {@link PublicKey PublicKey} items
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
-     * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws ScytaleException - If the API did not return a valid list of public keys
      */
     public List<PublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
         String getURL = String.format(KEYS_URI_FORMAT, keyStore.getId());
@@ -60,7 +59,7 @@ public class PublicKeyRequest extends ScytaleRequest {
      * Add a {@link PublicKey PublicKey} to a {@link KeyStore KeyStore}
      * @param publicKey {@link PublicKey PublicKey} to add
      * @param keyStore {@link KeyStore KeyStore} to add public to
-     * @return {@link String String} containing JSON result from API
+     * @return {@link PublicKey PublicKey} returned public key from keystore
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
@@ -82,7 +81,7 @@ public class PublicKeyRequest extends ScytaleRequest {
      * Update a {@link PublicKey PublicKey}
      * @param updatedKey {@link PublicKey PublicKey}
      * @param keyStore {@link KeyStore KeyStore} associated with {@link PublicKey PublicKey} to update
-     * @return {@link String String} containing JSON result from API
+     * @return {@link PublicKey PublicKey} copy of the updated public key returned from the API
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
