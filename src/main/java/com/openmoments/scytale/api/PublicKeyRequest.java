@@ -64,9 +64,9 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    public PublicKey add(PublicKey publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
+    public PublicKey add(String publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
         String addUrl = String.format(KEYS_URI_FORMAT, keyStore.getId());
-        JSONObject addKeyJson = new JSONObject().put(PUBLIC_KEY_ATTR, publicKey.getPublicKey());
+        JSONObject addKeyJson = new JSONObject().put(PUBLIC_KEY_ATTR, publicKey);
 
         try {
             JSONObject createdJSON = new JSONObject(this.post(addUrl, addKeyJson));

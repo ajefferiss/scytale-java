@@ -11,11 +11,6 @@ public final class PublicKey {
         this.publicKey = publicKey;
     }
 
-    public PublicKey(String publicKey) {
-        this.id = -1L;
-        this.publicKey = publicKey;
-    }
-
     public Long getId() {
         return id;
     }

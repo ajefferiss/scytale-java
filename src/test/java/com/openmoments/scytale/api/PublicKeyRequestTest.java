@@ -72,12 +72,11 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
         void shouldThrowOnError() throws IOException, InterruptedException {
-            PublicKey newPublicKey = new PublicKey(1L, "Test");
             when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
             Exception scytaleException = assertThrows(ScytaleException.class,
-                () -> new PublicKeyRequest(apiRequest).add(newPublicKey, keyStore));
+                () -> new PublicKeyRequest(apiRequest).add("Test", keyStore));
 
             assertEquals("API Returned invalid JSON", scytaleException.getMessage());
         }
@@ -85,14 +84,13 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should return PublicKey added")
         void shouldReturnPublicKeyAdded() throws IOException, InterruptedException, ScytaleException {
-            PublicKey toAdd = new PublicKey("Test Public Key");
             when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"publicKey\": \"Test Public Key\"}"));
 
-            PublicKey publicKeyAdded = new PublicKeyRequest(apiRequest).add(toAdd, keyStore);
-            toAdd = new PublicKey(1L, "Test Public Key");
+            PublicKey publicKeyAdded = new PublicKeyRequest(apiRequest).add("Test Public Key", keyStore);
+            PublicKey added = new PublicKey(1L, "Test Public Key");
 
-            assertEquals(toAdd, publicKeyAdded);
+            assertEquals(added, publicKeyAdded);
         }
     }
 
