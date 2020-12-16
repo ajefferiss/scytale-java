@@ -51,4 +51,9 @@ public final class CertificateEncoder {
 
         return encodedKeys;
     }
+
+    public String stripHeaderFooter(String key) {
+        return key.replace(RSA_PUBLIC_HEADER, "").replace(RSA_PUBLIC_FOOTER, "")
+                .replace(RSA_PRIVATE_HEADER, "").replace(RSA_PRIVATE_FOOTER, "");
+    }
 }

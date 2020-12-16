@@ -10,6 +10,9 @@ repositories {
 }
 
 dependencies {
+    compile group: 'org.bouncycastle', name: 'bcprov-jdk14', version: '1.67'
+    compile group: 'org.bouncycastle', name: 'bcpkix-jdk14', version: '1.67'
+
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.7.0'
     testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
