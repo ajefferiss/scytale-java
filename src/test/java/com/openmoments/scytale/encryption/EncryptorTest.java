@@ -94,5 +94,17 @@ class EncryptorTest {
 
             assertEquals("Test", encryptor.decrypt(cipherText.get(0), keyPair.getPrivate()));
         }
+
+        @Test
+        @DisplayName("Should decrypt when private key base64")
+        void shouldDecryptWithStringPrivateKey() throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+            KeyPair keyPair = rsaCertificate.generateKeyPair();
+            Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
+
+            List<PublicKey> publicKeys = List.of(new PublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
+            List<String> cipherText = encryptor.encrypt("Test", publicKeys);
+
+            assertEquals("Test", encryptor.decrypt(cipherText.get(0), encodedKeys.get(CertificateEncoder.KeyType.PRIVATE)));
+        }
     }
 }
