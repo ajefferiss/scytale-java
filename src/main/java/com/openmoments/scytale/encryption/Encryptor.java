@@ -36,9 +36,7 @@ public class Encryptor {
      */
     public List<String> encrypt(String data, List<PublicKey> publicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException {
         List<String> encryptedData = new ArrayList<>();
-
-        Provider[] providers = Security.getProviders();
-
+        
         Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
 
         for (PublicKey publicKey : publicKeyList) {
