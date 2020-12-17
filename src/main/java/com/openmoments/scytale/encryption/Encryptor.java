@@ -17,6 +17,9 @@ import java.util.List;
 
 public class Encryptor {
 
+    private static final String TRANSFORMATION = "RSA/ECB/OAEPwithSHA1andMGF1Padding";
+    private static final String PROVIDER = "BC";
+
     public Encryptor() {
         Security.addProvider(new BouncyCastleProvider());
     }
@@ -36,8 +39,8 @@ public class Encryptor {
      */
     public List<String> encrypt(String data, List<PublicKey> publicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException {
         List<String> encryptedData = new ArrayList<>();
-        
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
 
         for (PublicKey publicKey : publicKeyList) {
             cipher.init(Cipher.ENCRYPT_MODE, getKey(publicKey.getPublicKey()));
@@ -62,7 +65,7 @@ public class Encryptor {
      * @throws NoSuchProviderException - Security provider is not available
      */
     public String decrypt(String data, PrivateKey privateKey) throws NoSuchPaddingException, NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException, InvalidKeyException, NoSuchProviderException {
-        Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+        Cipher cipher = Cipher.getInstance(TRANSFORMATION, PROVIDER);
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
         return new String(cipher.doFinal(Base64.getDecoder().decode(data.getBytes())));
     }
