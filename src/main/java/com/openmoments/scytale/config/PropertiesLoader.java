@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesLoader {
-    private static final String DEFAULT_PROPERITES = "./local.properties";
+    private static final String DEFAULT_PROPERITES = "./scytale.properties";
 
     private String propertiesFile = DEFAULT_PROPERITES;
 
