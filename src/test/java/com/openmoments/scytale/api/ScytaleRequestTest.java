@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -39,7 +40,7 @@ class ScytaleRequestTest {
     class ScytaleGet {
         @Test
         @DisplayName("Non-success response throws")
-        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException {
+        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
             when(apiRequest.get(any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).get("/"));
@@ -49,7 +50,7 @@ class ScytaleRequestTest {
 
         @Test
         @DisplayName("Should return request body")
-        void shouldReturnRequestBody() throws IOException, InterruptedException, ScytaleException {
+        void shouldReturnRequestBody() throws IOException, InterruptedException, ScytaleException, CertificateException {
             when(apiRequest.get(any(), any())).thenReturn(TestUtils.setupHTTPResponse(200, "{'id': 1, 'name': 'Test'}"));
 
             String expected = "{'id': 1, 'name': 'Test'}";
@@ -64,7 +65,7 @@ class ScytaleRequestTest {
 
         @Test
         @DisplayName("Non-success response throws")
-        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException {
+        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
             when(apiRequest.post(any(), any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).post("/", postJson));
@@ -80,7 +81,7 @@ class ScytaleRequestTest {
 
         @Test
         @DisplayName("Non-success response throws")
-        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException {
+        void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
             when(apiRequest.put(any(), any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).put("/", putJson));

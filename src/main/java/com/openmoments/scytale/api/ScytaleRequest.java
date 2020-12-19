@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.security.cert.CertificateException;
 
 public class ScytaleRequest {
     private APIRequest apiRequest;
@@ -28,7 +29,7 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String get(String getURL) throws IOException, InterruptedException, ScytaleException {
+    protected String get(String getURL) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> getResponse = apiRequest.get(getURL,null);
         if (getResponse.statusCode() != 200) {
             throw new ScytaleException("API response failed with " + getResponse.body());
@@ -46,7 +47,7 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String post(String postURL, JSONObject postBody) throws IOException, InterruptedException, ScytaleException {
+    protected String post(String postURL, JSONObject postBody) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> postResponse = apiRequest.post(postURL, postBody, null);
 
         if (postResponse.statusCode() != 200) {
@@ -65,7 +66,7 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String put(String putURL, JSONObject putBody) throws IOException, InterruptedException, ScytaleException {
+    protected String put(String putURL, JSONObject putBody) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> putResponse = apiRequest.put(putURL, putBody, null);
 
         if (putResponse.statusCode() != 200) {

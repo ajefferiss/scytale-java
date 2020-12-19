@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,8 +37,9 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid list of public keys
+     * @throws CertificateException - Certificate authentication failed
      */
-    public List<PublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
+    public List<PublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String getURL = String.format(KEYS_URI_FORMAT, keyStore.getId());
 
         try {
@@ -63,8 +65,9 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws CertificateException - Certificate authentication failed
      */
-    public PublicKey add(String publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
+    public PublicKey add(String publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String addUrl = String.format(KEYS_URI_FORMAT, keyStore.getId());
         JSONObject addKeyJson = new JSONObject().put(PUBLIC_KEY_ATTR, publicKey);
 
@@ -85,8 +88,9 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws CertificateException - Certificate authentication failed
      */
-    public PublicKey update(PublicKey updatedKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException {
+    public PublicKey update(PublicKey updatedKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String updateUrl = String.format(KEYS_URI_FORMAT, keyStore.getId()) + "/" + updatedKey.getId();
         JSONObject updateJson = new JSONObject().put(ID_ATTR, updatedKey.getId()).put(PUBLIC_KEY_ATTR, updatedKey.getPublicKey());
 

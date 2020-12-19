@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -63,7 +64,7 @@ public class ExampleUsage {
             KeyStore newKeystore = keyStoreRequest.createKeyStore(newID);
             LOG.log(Level.INFO, "Create a new keystore for {0} of {1}", new String[]{newID, String.valueOf(newKeystore)});
             return newKeystore;
-        } catch (IOException | InterruptedException | ScytaleException e) {
+        } catch (IOException | InterruptedException | ScytaleException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to create new keystore", e);
         }
         return null;
@@ -73,7 +74,7 @@ public class ExampleUsage {
         try {
             KeyStore retrievedKeyStore = keyStoreRequest.getById(id);
             LOG.log(Level.INFO, "Retrieved keystore {0}", String.valueOf(retrievedKeyStore));
-        } catch (IOException | InterruptedException | ScytaleException e) {
+        } catch (IOException | InterruptedException | ScytaleException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to retrieve keystore", e);
         }
     }
@@ -82,7 +83,7 @@ public class ExampleUsage {
         try {
             KeyStore response = keyStoreRequest.searchByName(name);
             LOG.log(Level.INFO, "Retrieved {0}", response);
-        } catch (InterruptedException | IOException | InvalidKeystoreException | ScytaleException e) {
+        } catch (InterruptedException | IOException | InvalidKeystoreException | ScytaleException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to search for keystore", e);
         }
     }
@@ -94,7 +95,7 @@ public class ExampleUsage {
             KeyStore updated = keyStoreRequest.updateKeyStore(updateKeyStore);
 
             LOG.log(Level.INFO, "Updated from " + foundKeyStore + " to " + updated);
-        } catch (InterruptedException | IOException | InvalidKeystoreException | ScytaleException e) {
+        } catch (InterruptedException | IOException | InvalidKeystoreException | ScytaleException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to search for keystore", e);
         }
     }
@@ -103,7 +104,7 @@ public class ExampleUsage {
         try {
             List<PublicKey> foundKeys = new PublicKeyRequest(new Request()).getAll(keyStore);
             LOG.log(Level.INFO, "Found keys: {0}", foundKeys);
-        } catch (InterruptedException | ScytaleException | IOException e) {
+        } catch (InterruptedException | ScytaleException | IOException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to get keys", e);
         }
     }
@@ -117,7 +118,7 @@ public class ExampleUsage {
                     keyMap.get(CertificateEncoder.KeyType.PUBLIC),
                     keyStore);
             LOG.log(Level.INFO, "Created public key {0}", publicKey);
-        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException e) {
+        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to add key", e);
         }
     }
