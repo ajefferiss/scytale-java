@@ -4,12 +4,8 @@ import com.openmoments.scytale.config.PropertiesLoader;
 import com.openmoments.scytale.encryption.RandomStringGenerator;
 import org.json.JSONObject;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.net.ssl.*;
+import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,9 +14,7 @@ import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.Base64;
+import java.security.spec.*;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -82,40 +76,45 @@ public class Request implements APIRequest {
             apiRequestBuilder.header(AUTHENTICATION_KEY_HEADER, properties.get(API_AUTH_KEY).toString());
             client = HttpClient.newBuilder().build();
         } else if (authType.equalsIgnoreCase("cert")) {
-            final byte[] publicData = getCertData();
-            final byte[] privateData = getKeyData();
-
             try {
-                SSLContext sslCtx = getSslContext(publicData, privateData);
-
+                SSLContext sslContext = getSslContext();
                 SSLParameters sslParam = new SSLParameters();
                 sslParam.setNeedClientAuth(true);
 
-                client = HttpClient.newBuilder().sslContext(sslCtx).sslParameters(sslParam).build();
-            } catch (CertificateException | NoSuchAlgorithmException | InvalidKeySpecException | KeyStoreException | IOException | UnrecoverableKeyException | KeyManagementException e) {
+                client = HttpClient.newBuilder().sslContext(sslContext).sslParameters(sslParam).build();
+            } catch (CertificateException | NoSuchAlgorithmException | KeyStoreException | IOException | UnrecoverableKeyException | KeyManagementException e) {
                 LOG.log(Level.SEVERE, "Failed to configure mutual authentication for API Requests", e);
                 throw new CertificateException("Certificate used for mutual authentication is invalid");
             }
         }
     }
 
-    private SSLContext getSslContext(byte[] publicData, byte[] privateData) throws CertificateException, InvalidKeySpecException, NoSuchAlgorithmException, KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
-        final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-        final Collection<? extends Certificate> chain = certificateFactory.generateCertificates(
-            new ByteArrayInputStream(publicData)
-        );
-        final Key key = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(privateData));
-        KeyStore clientKeyStore = KeyStore.getInstance("jks");
-        final char[] pwdChars = new RandomStringGenerator().buildString().toCharArray();
-        clientKeyStore.load(null, null);
-        clientKeyStore.setKeyEntry("Scytale", key, pwdChars, chain.toArray(new Certificate[0]));
+    private SSLContext getSslContext() throws CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException, UnrecoverableKeyException, KeyManagementException {
+        KeyStore clientKeyStore = KeyStore.getInstance("pkcs12");
+        String p12Password = properties.getProperty(API_AUTH_KEY, "");
+        InputStream clientP12 = getClass().getClassLoader().getResourceAsStream(properties.getProperty(API_AUTH_CERT));
+        TrustManager[] managers = null;
+
+        String trustManager = properties.getProperty("api.auth.truststore");
+        if (trustManager != null && !trustManager.isEmpty()) {
+            InputStream trustManagerStream = getClass().getClassLoader().getResourceAsStream(trustManager);
+            KeyStore trustStore = KeyStore.getInstance("jks");
+            String trustStorePassword = properties.getProperty("api.auth.truststore-password", "");
+            trustStore.load(trustManagerStream, trustStorePassword.toCharArray());
+
+            TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            factory.init(trustStore);
+            managers = factory.getTrustManagers();
+        }
+
+        clientKeyStore.load(clientP12, p12Password.toCharArray());
 
         KeyManagerFactory keyMgrFactory = KeyManagerFactory.getInstance("SunX509");
-        keyMgrFactory.init(clientKeyStore, pwdChars);
+        keyMgrFactory.init(clientKeyStore, p12Password.toCharArray());
 
-        SSLContext sslCtx = SSLContext.getInstance("TLSv1.2");
-        sslCtx.init(keyMgrFactory.getKeyManagers(), null, null);
-        return sslCtx;
+        SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
+        sslContext.init(keyMgrFactory.getKeyManagers(), managers, null);
+        return sslContext;
     }
 
     private String getAPIURL(String uri) {
@@ -123,30 +122,5 @@ public class Request implements APIRequest {
                 .replaceAll("/+$", "") +
                 "/" +
                 uri.replaceAll("^/+", "");
-    }
-
-    private byte[] getCertData() {
-        return decodeCertificateData(properties.getProperty(API_AUTH_CERT));
-    }
-
-    private byte[] getKeyData() {
-        return decodeCertificateData(properties.getProperty(API_AUTH_KEY));
-    }
-
-    private byte[] decodeCertificateData(String data) {
-        try {
-            return Base64.getDecoder().decode(data);
-        } catch (IllegalArgumentException illegalArgumentException) {
-            LOG.log(Level.FINE, "Failed to decode data as base64", illegalArgumentException);
-            try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(data)) {
-                if (inputStream != null) {
-                    return inputStream.readAllBytes();
-                }
-            } catch (IOException ioException) {
-                LOG.log(Level.FINE, "Failed to decode data as resource path", ioException);
-            }
-        }
-
-        throw new IllegalArgumentException("Authentication required but is not valid");
     }
 }
