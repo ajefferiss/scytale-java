@@ -1,21 +1,17 @@
 package com.openmoments.scytale.api;
 
 import com.openmoments.scytale.config.PropertiesLoader;
-import com.openmoments.scytale.encryption.RandomStringGenerator;
 import org.json.JSONObject;
 
 import javax.net.ssl.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.security.*;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.spec.*;
-import java.util.Collection;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
