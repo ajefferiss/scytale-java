@@ -9,6 +9,8 @@ import java.security.cert.CertificateException;
 
 public class ScytaleRequest {
     private APIRequest apiRequest;
+    protected static final String FAILED_WITH = "API response failed with ";
+    protected static final String RETURNED_INVALID_JSON = "API Returned invalid JSON";
 
     /***
      *
@@ -32,7 +34,7 @@ public class ScytaleRequest {
     protected String get(String getURL) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> getResponse = apiRequest.get(getURL,null);
         if (getResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + getResponse.body());
+            throw new ScytaleException(FAILED_WITH + getResponse.body());
         }
 
         return getResponse.body();
@@ -51,7 +53,7 @@ public class ScytaleRequest {
         HttpResponse<String> postResponse = apiRequest.post(postURL, postBody, null);
 
         if (postResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + postResponse.body());
+            throw new ScytaleException(FAILED_WITH + postResponse.body());
         }
 
         return postResponse.body();
@@ -70,7 +72,7 @@ public class ScytaleRequest {
         HttpResponse<String> putResponse = apiRequest.put(putURL, putBody, null);
 
         if (putResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + putResponse.body());
+            throw new ScytaleException(FAILED_WITH + putResponse.body());
         }
 
         return putResponse.body();

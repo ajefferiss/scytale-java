@@ -108,8 +108,8 @@ public class KeyStoreRequest extends ScytaleRequest {
             return new KeyStore(jsonObject.get().getLong(KEYSTORE_ID_ATTR),
                                 jsonObject.get().getString(KEYSTORE_NAME_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 
@@ -130,8 +130,8 @@ public class KeyStoreRequest extends ScytaleRequest {
             JSONObject jsonObject = new JSONObject(jsonString);
             return new KeyStore(jsonObject.getLong(KEYSTORE_ID_ATTR), jsonObject.getString(KEYSTORE_NAME_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 }

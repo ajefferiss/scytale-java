@@ -52,8 +52,8 @@ public class PublicKeyRequest extends ScytaleRequest {
                     .map(o -> new PublicKey(o.getLong(ID_ATTR), o.getString(PUBLIC_KEY_ATTR)))
                     .collect(Collectors.toList());
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 
@@ -75,8 +75,8 @@ public class PublicKeyRequest extends ScytaleRequest {
             JSONObject createdJSON = new JSONObject(this.post(addUrl, addKeyJson));
             return new PublicKey(createdJSON.getLong(ID_ATTR), createdJSON.getString(PUBLIC_KEY_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 
@@ -98,8 +98,8 @@ public class PublicKeyRequest extends ScytaleRequest {
             JSONObject updatedJSON = new JSONObject(this.put(updateUrl, updateJson));
             return new PublicKey(updatedJSON.getLong(ID_ATTR), updatedJSON.getString(PUBLIC_KEY_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 }
