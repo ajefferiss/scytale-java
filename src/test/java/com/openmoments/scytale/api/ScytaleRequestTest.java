@@ -41,7 +41,7 @@ class ScytaleRequestTest {
         @Test
         @DisplayName("Non-success response throws")
         void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
-            when(apiRequest.get(any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
+            when(apiRequest.get(any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).get("/"));
             String expectedMessage = "API response failed with Forbidden 403";
@@ -51,7 +51,7 @@ class ScytaleRequestTest {
         @Test
         @DisplayName("Should return request body")
         void shouldReturnRequestBody() throws IOException, InterruptedException, ScytaleException, CertificateException {
-            when(apiRequest.get(any(), any())).thenReturn(TestUtils.setupHTTPResponse(200, "{'id': 1, 'name': 'Test'}"));
+            when(apiRequest.get(any())).thenReturn(TestUtils.setupHTTPResponse(200, "{'id': 1, 'name': 'Test'}"));
 
             String expected = "{'id': 1, 'name': 'Test'}";
             assertEquals(expected, new ScytaleRequest(apiRequest).get("/"));
@@ -66,7 +66,7 @@ class ScytaleRequestTest {
         @Test
         @DisplayName("Non-success response throws")
         void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
-            when(apiRequest.post(any(), any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
+            when(apiRequest.post(any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).post("/", postJson));
             String expectedMessage = "API response failed with Forbidden 403";
@@ -82,7 +82,7 @@ class ScytaleRequestTest {
         @Test
         @DisplayName("Non-success response throws")
         void shouldThrowWhenHTTPNot200() throws IOException, InterruptedException, CertificateException {
-            when(apiRequest.put(any(), any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
+            when(apiRequest.put(any(), any())).thenReturn(TestUtils.setupHTTPResponse(403, "Forbidden 403"));
 
             Exception scytaleException = assertThrows(ScytaleException.class, () -> new ScytaleRequest(apiRequest).put("/", putJson));
             String expectedMessage = "API response failed with Forbidden 403";

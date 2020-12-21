@@ -4,7 +4,6 @@ import com.openmoments.scytale.TestUtils;
 import com.openmoments.scytale.entities.KeyStore;
 import com.openmoments.scytale.exception.InvalidKeystoreException;
 import com.openmoments.scytale.exception.ScytaleException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,10 +51,10 @@ class KeyStoreRequestTest {
     @Test
     @DisplayName("Returns a Keystore when found by ID")
     void shouldReturnKeystoreById() throws IOException, InterruptedException, ScytaleException, CertificateException {
-        when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any()))
+        when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1")))
                 .thenReturn(TestUtils.setupHTTPResponse(200, KEYSTORE_JSON));
 
-        KeyStore keyStore = new KeyStoreRequest(apiRequest).getById(1L);
+        KeyStore keyStore = new KeyStoreRequest(apiRequest).getById(1L).get();
         assertNotNull(keyStore);
         assertEquals(1L, keyStore.getId());
         assertEquals("Test", keyStore.getName());
@@ -64,7 +63,7 @@ class KeyStoreRequestTest {
     @Test
     @DisplayName("Throws when invalid JSON returned")
     void shouldThrowWhenInvalidJsonReturned() throws IOException, InterruptedException, CertificateException {
-        when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any()))
+        when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1")))
                 .thenReturn(TestUtils.setupHTTPResponse(200,  "{\"id\": 1, \"ks name\": \"Test\"}"));
 
         Exception scytaleException = assertThrows(ScytaleException.class,
@@ -76,10 +75,10 @@ class KeyStoreRequestTest {
     @Test
     @DisplayName("Creation returns a keystore")
     void shouldReturnKeystoreOnCreate() throws IOException, InterruptedException, ScytaleException, CertificateException {
-        when(apiRequest.post(eq(KeyStoreRequest.KEYSTORE_URI), any(JSONObject.class), any()))
+        when(apiRequest.post(eq(KeyStoreRequest.KEYSTORE_URI), any(JSONObject.class)))
                 .thenReturn(TestUtils.setupHTTPResponse(200, KEYSTORE_JSON));
 
-        KeyStore keyStore = new KeyStoreRequest(apiRequest).createKeyStore("Test");
+        KeyStore keyStore = new KeyStoreRequest(apiRequest).createKeyStore("Test").get();
         assertNotNull(keyStore);
         assertEquals(1L, keyStore.getId());
         assertEquals("Test", keyStore.getName());
@@ -88,11 +87,11 @@ class KeyStoreRequestTest {
     @Test
     @DisplayName("Update should return KeyStore")
     void shouldReturnUpdatedKeyStore() throws IOException, InterruptedException, ScytaleException, CertificateException {
-        when(apiRequest.put(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any(JSONObject.class), any()))
+        when(apiRequest.put(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any(JSONObject.class)))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"name\": \"Updated KeyStore\"}"));
 
         KeyStore updatedKeyStore = new KeyStore(1L, "Updated KeyStore");
-        KeyStore keyStore = new KeyStoreRequest(apiRequest).updateKeyStore(updatedKeyStore);
+        KeyStore keyStore = new KeyStoreRequest(apiRequest).updateKeyStore(updatedKeyStore).get();
         assertNotNull(keyStore);
         assertEquals(1L, keyStore.getId());
         assertEquals("Updated KeyStore", keyStore.getName());
@@ -102,10 +101,10 @@ class KeyStoreRequestTest {
     @DisplayName("Returns a Keystore when found by exact name")
     void shouldReturnKeystoreByName() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException, CertificateException {
         String jsonArray = "[" + KEYSTORE_JSON + ", {\"id\": 2, \"name\": \"Test JSON\"}]";
-        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test", null))
+        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test"))
                 .thenReturn(TestUtils.setupHTTPResponse(200, jsonArray));
 
-        KeyStore keyStore = new KeyStoreRequest(apiRequest).searchByName("Test");
+        KeyStore keyStore = new KeyStoreRequest(apiRequest).searchByName("Test").get();
         assertNotNull(keyStore);
         assertEquals(1L, keyStore.getId());
         assertEquals("Test", keyStore.getName());
@@ -114,7 +113,7 @@ class KeyStoreRequestTest {
     @Test
     @DisplayName("Throws when search by name returns invalid")
     void shouldThrowWhenSearchByNameInvalid() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException, CertificateException {
-        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test", null))
+        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test"))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
         Exception scytaleException = assertThrows(ScytaleException.class,
@@ -128,7 +127,7 @@ class KeyStoreRequestTest {
     @DisplayName("Should throw when exact name not found")
     void shouldThrowWhenKeystoreNotFoundByName() throws IOException, InterruptedException, CertificateException {
         String jsonArray = "[" + KEYSTORE_JSON + ", {\"id\": 2, \"name\": \"Test JSON\"}]";
-        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test ", null))
+        when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test "))
                 .thenReturn(TestUtils.setupHTTPResponse(200, jsonArray));
 
         Exception invalidKeyStoreException = assertThrows(InvalidKeystoreException.class,

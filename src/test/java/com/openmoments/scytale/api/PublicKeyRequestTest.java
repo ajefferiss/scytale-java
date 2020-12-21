@@ -32,7 +32,7 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
         void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
-            when(apiRequest.get(eq("keystores/1/keys"), any()))
+            when(apiRequest.get(eq("keystores/1/keys")))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
             Exception scytaleException = assertThrows(ScytaleException.class,
@@ -44,7 +44,7 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should return PublicKey list")
         void shouldReturnKeysAsList() throws IOException, InterruptedException, ScytaleException, CertificateException {
-            when(apiRequest.get(eq("keystores/1/keys"), any()))
+            when(apiRequest.get(eq("keystores/1/keys")))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "[{\"id\": 1, \"publicKey\": \"Test Updated\"}]"));
 
             List<PublicKey> getResponse = new PublicKeyRequest(apiRequest).getAll(keyStore);
@@ -57,7 +57,7 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should return empty list when no keys")
         void shouldReturnEmptyList() throws IOException, InterruptedException, ScytaleException, CertificateException {
-            when(apiRequest.get(eq("keystores/1/keys"), any()))
+            when(apiRequest.get(eq("keystores/1/keys")))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "[]"));
 
             List<PublicKey> getResponse = new PublicKeyRequest(apiRequest).getAll(keyStore);
@@ -73,7 +73,7 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
         void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
-            when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
+            when(apiRequest.post(eq("keystores/1/keys"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
             Exception scytaleException = assertThrows(ScytaleException.class,
@@ -85,7 +85,7 @@ class PublicKeyRequestTest {
         @Test
         @DisplayName("Should return PublicKey added")
         void shouldReturnPublicKeyAdded() throws IOException, InterruptedException, ScytaleException, CertificateException {
-            when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
+            when(apiRequest.post(eq("keystores/1/keys"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"publicKey\": \"Test Public Key\"}"));
 
             PublicKey publicKeyAdded = new PublicKeyRequest(apiRequest).add("Test Public Key", keyStore);
@@ -102,7 +102,7 @@ class PublicKeyRequestTest {
         @DisplayName("Should throw Scytale Exception on error")
         void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
             PublicKey newPublicKey = new PublicKey(1L, "Test");
-            when(apiRequest.put(eq("keystores/1/keys/1"), any(), any()))
+            when(apiRequest.put(eq("keystores/1/keys/1"), any()))
                     .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
             Exception scytaleException = assertThrows(ScytaleException.class,
@@ -115,7 +115,7 @@ class PublicKeyRequestTest {
         @DisplayName("Should return PublicKey added")
         void shouldReturnPublicKeyUpdated() throws IOException, InterruptedException, ScytaleException, CertificateException {
             PublicKey updatedPublicKey = new PublicKey(1L, "Updated Test Public Key");
-            when(apiRequest.put(eq("keystores/1/keys/1"), any(), any()))
+            when(apiRequest.put(eq("keystores/1/keys/1"), any()))
                     .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"publicKey\": \"Updated Test Public Key\"}"));
 
             PublicKey publicKeyAdded = new PublicKeyRequest(apiRequest).update(updatedPublicKey, keyStore);
