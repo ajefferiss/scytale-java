@@ -8,7 +8,7 @@ import java.net.http.HttpResponse;
 import java.security.cert.CertificateException;
 
 public class ScytaleRequest {
-    private APIRequest apiRequest;
+    private final APIRequest apiRequest;
     protected static final String FAILED_WITH = "API response failed with ";
     protected static final String RETURNED_INVALID_JSON = "API Returned invalid JSON";
 
