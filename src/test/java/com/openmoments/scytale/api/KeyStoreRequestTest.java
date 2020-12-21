@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +51,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Returns a Keystore when found by ID")
-    void shouldReturnKeystoreById() throws IOException, InterruptedException, ScytaleException {
+    void shouldReturnKeystoreById() throws IOException, InterruptedException, ScytaleException, CertificateException {
         when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, KEYSTORE_JSON));
 
@@ -62,7 +63,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Throws when invalid JSON returned")
-    void shouldThrowWhenInvalidJsonReturned() throws IOException, InterruptedException {
+    void shouldThrowWhenInvalidJsonReturned() throws IOException, InterruptedException, CertificateException {
         when(apiRequest.get(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200,  "{\"id\": 1, \"ks name\": \"Test\"}"));
 
@@ -74,7 +75,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Creation returns a keystore")
-    void shouldReturnKeystoreOnCreate() throws IOException, InterruptedException, ScytaleException {
+    void shouldReturnKeystoreOnCreate() throws IOException, InterruptedException, ScytaleException, CertificateException {
         when(apiRequest.post(eq(KeyStoreRequest.KEYSTORE_URI), any(JSONObject.class), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, KEYSTORE_JSON));
 
@@ -86,7 +87,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Update should return KeyStore")
-    void shouldReturnUpdatedKeyStore() throws IOException, InterruptedException, ScytaleException {
+    void shouldReturnUpdatedKeyStore() throws IOException, InterruptedException, ScytaleException, CertificateException {
         when(apiRequest.put(eq(KeyStoreRequest.KEYSTORE_URI + "/1"), any(JSONObject.class), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"name\": \"Updated KeyStore\"}"));
 
@@ -99,7 +100,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Returns a Keystore when found by exact name")
-    void shouldReturnKeystoreByName() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException {
+    void shouldReturnKeystoreByName() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException, CertificateException {
         String jsonArray = "[" + KEYSTORE_JSON + ", {\"id\": 2, \"name\": \"Test JSON\"}]";
         when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test", null))
                 .thenReturn(TestUtils.setupHTTPResponse(200, jsonArray));
@@ -112,7 +113,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Throws when search by name returns invalid")
-    void shouldThrowWhenSearchByNameInvalid() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException {
+    void shouldThrowWhenSearchByNameInvalid() throws IOException, InterruptedException, InvalidKeystoreException, ScytaleException, CertificateException {
         when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test", null))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
@@ -125,7 +126,7 @@ class KeyStoreRequestTest {
 
     @Test
     @DisplayName("Should throw when exact name not found")
-    void shouldThrowWhenKeystoreNotFoundByName() throws IOException, InterruptedException {
+    void shouldThrowWhenKeystoreNotFoundByName() throws IOException, InterruptedException, CertificateException {
         String jsonArray = "[" + KEYSTORE_JSON + ", {\"id\": 2, \"name\": \"Test JSON\"}]";
         when(apiRequest.get(KeyStoreRequest.KEYSTORE_URI + "/search?name=Test ", null))
                 .thenReturn(TestUtils.setupHTTPResponse(200, jsonArray));

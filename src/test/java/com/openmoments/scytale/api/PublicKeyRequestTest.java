@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ class PublicKeyRequestTest {
     class PublicKeyGets {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
-        void shouldThrowOnError() throws IOException, InterruptedException {
+        void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
             when(apiRequest.get(eq("keystores/1/keys"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
@@ -42,7 +43,7 @@ class PublicKeyRequestTest {
 
         @Test
         @DisplayName("Should return PublicKey list")
-        void shouldReturnKeysAsList() throws IOException, InterruptedException, ScytaleException {
+        void shouldReturnKeysAsList() throws IOException, InterruptedException, ScytaleException, CertificateException {
             when(apiRequest.get(eq("keystores/1/keys"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "[{\"id\": 1, \"publicKey\": \"Test Updated\"}]"));
 
@@ -55,7 +56,7 @@ class PublicKeyRequestTest {
 
         @Test
         @DisplayName("Should return empty list when no keys")
-        void shouldReturnEmptyList() throws IOException, InterruptedException, ScytaleException {
+        void shouldReturnEmptyList() throws IOException, InterruptedException, ScytaleException, CertificateException {
             when(apiRequest.get(eq("keystores/1/keys"), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "[]"));
 
@@ -71,7 +72,7 @@ class PublicKeyRequestTest {
     class PublicKeyAdd {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
-        void shouldThrowOnError() throws IOException, InterruptedException {
+        void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
             when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
 
@@ -83,7 +84,7 @@ class PublicKeyRequestTest {
 
         @Test
         @DisplayName("Should return PublicKey added")
-        void shouldReturnPublicKeyAdded() throws IOException, InterruptedException, ScytaleException {
+        void shouldReturnPublicKeyAdded() throws IOException, InterruptedException, ScytaleException, CertificateException {
             when(apiRequest.post(eq("keystores/1/keys"), any(), any()))
                 .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"publicKey\": \"Test Public Key\"}"));
 
@@ -99,7 +100,7 @@ class PublicKeyRequestTest {
     class PublicKeyUpdate {
         @Test
         @DisplayName("Should throw Scytale Exception on error")
-        void shouldThrowOnError() throws IOException, InterruptedException {
+        void shouldThrowOnError() throws IOException, InterruptedException, CertificateException {
             PublicKey newPublicKey = new PublicKey(1L, "Test");
             when(apiRequest.put(eq("keystores/1/keys/1"), any(), any()))
                     .thenReturn(TestUtils.setupHTTPResponse(200, "Not JSON"));
@@ -112,7 +113,7 @@ class PublicKeyRequestTest {
 
         @Test
         @DisplayName("Should return PublicKey added")
-        void shouldReturnPublicKeyUpdated() throws IOException, InterruptedException, ScytaleException {
+        void shouldReturnPublicKeyUpdated() throws IOException, InterruptedException, ScytaleException, CertificateException {
             PublicKey updatedPublicKey = new PublicKey(1L, "Updated Test Public Key");
             when(apiRequest.put(eq("keystores/1/keys/1"), any(), any()))
                     .thenReturn(TestUtils.setupHTTPResponse(200, "{\"id\": 1, \"publicKey\": \"Updated Test Public Key\"}"));

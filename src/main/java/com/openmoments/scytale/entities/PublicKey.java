@@ -3,8 +3,8 @@ package com.openmoments.scytale.entities;
 import java.util.Objects;
 
 public final class PublicKey {
-    private Long id;
-    private String publicKey;
+    private final Long id;
+    private final String publicKey;
 
     public PublicKey(Long id, String publicKey) {
         this.id = id;

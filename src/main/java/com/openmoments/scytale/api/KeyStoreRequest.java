@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,8 +36,9 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore getById(Long id) throws InterruptedException, ScytaleException, IOException {
+    public KeyStore getById(Long id) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateID(id);
         return fromJson(this.get(KEYSTORE_URI + "/" + id));
     }
@@ -48,8 +50,9 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore createKeyStore(String name) throws InterruptedException, ScytaleException, IOException {
+    public KeyStore createKeyStore(String name) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateName(name);
 
         JSONObject createJson = new JSONObject().put(KEYSTORE_NAME_ATTR, name);
@@ -63,8 +66,9 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
+     * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore updateKeyStore(KeyStore updated) throws InterruptedException, ScytaleException, IOException {
+    public KeyStore updateKeyStore(KeyStore updated) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateID(updated.getId());
         validateName(updated.getName());
 
@@ -85,8 +89,9 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws InvalidKeystoreException - Could not find the the specified keystore by name
+     * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore searchByName(String name) throws IOException, InterruptedException, ScytaleException, InvalidKeystoreException {
+    public KeyStore searchByName(String name) throws IOException, InterruptedException, ScytaleException, InvalidKeystoreException, CertificateException {
         String searchURL = KEYSTORE_URI + "/search?name=" + name;
 
         try {
@@ -103,8 +108,8 @@ public class KeyStoreRequest extends ScytaleRequest {
             return new KeyStore(jsonObject.get().getLong(KEYSTORE_ID_ATTR),
                                 jsonObject.get().getString(KEYSTORE_NAME_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 
@@ -125,8 +130,8 @@ public class KeyStoreRequest extends ScytaleRequest {
             JSONObject jsonObject = new JSONObject(jsonString);
             return new KeyStore(jsonObject.getLong(KEYSTORE_ID_ATTR), jsonObject.getString(KEYSTORE_NAME_ATTR));
         } catch (JSONException jsonException) {
-            LOG.log(Level.SEVERE, "API Returned invalid JSON", jsonException);
-            throw new ScytaleException("API Returned invalid JSON");
+            LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
+            throw new ScytaleException(RETURNED_INVALID_JSON);
         }
     }
 }

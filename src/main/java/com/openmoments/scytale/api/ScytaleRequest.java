@@ -5,9 +5,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.security.cert.CertificateException;
 
 public class ScytaleRequest {
-    private APIRequest apiRequest;
+    private final APIRequest apiRequest;
+    protected static final String FAILED_WITH = "API response failed with ";
+    protected static final String RETURNED_INVALID_JSON = "API Returned invalid JSON";
 
     /***
      *
@@ -28,10 +31,10 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String get(String getURL) throws IOException, InterruptedException, ScytaleException {
+    protected String get(String getURL) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> getResponse = apiRequest.get(getURL,null);
         if (getResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + getResponse.body());
+            throw new ScytaleException(FAILED_WITH + getResponse.body());
         }
 
         return getResponse.body();
@@ -46,11 +49,11 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String post(String postURL, JSONObject postBody) throws IOException, InterruptedException, ScytaleException {
+    protected String post(String postURL, JSONObject postBody) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> postResponse = apiRequest.post(postURL, postBody, null);
 
         if (postResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + postResponse.body());
+            throw new ScytaleException(FAILED_WITH + postResponse.body());
         }
 
         return postResponse.body();
@@ -65,11 +68,11 @@ public class ScytaleRequest {
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      */
-    protected String put(String putURL, JSONObject putBody) throws IOException, InterruptedException, ScytaleException {
+    protected String put(String putURL, JSONObject putBody) throws IOException, InterruptedException, ScytaleException, CertificateException {
         HttpResponse<String> putResponse = apiRequest.put(putURL, putBody, null);
 
         if (putResponse.statusCode() != 200) {
-            throw new ScytaleException("API response failed with " + putResponse.body());
+            throw new ScytaleException(FAILED_WITH + putResponse.body());
         }
 
         return putResponse.body();

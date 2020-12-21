@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public final class KeyStore {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public KeyStore(Long id, String name) {
         this.id = id;
