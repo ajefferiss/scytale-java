@@ -26,7 +26,11 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws IllegalArgumentException - if the APIRequest is invalid
      */
     public KeyStoreRequest(APIRequest apiRequest) {
-        super(apiRequest);
+        this(apiRequest, null);
+    }
+
+    public KeyStoreRequest(APIRequest apiRequest, APIRequestCallback callback) {
+        super(apiRequest, callback);
     }
 
     /***
@@ -38,9 +42,16 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore getById(Long id) throws InterruptedException, ScytaleException, IOException, CertificateException {
+    public Optional<KeyStore> getById(Long id) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateID(id);
-        return fromJson(this.get(KEYSTORE_URI + "/" + id));
+
+        String bodyResponse = this.get(KEYSTORE_URI + "/" + id);
+
+        if (bodyResponse.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(fromJson(bodyResponse));
     }
 
     /***
@@ -52,11 +63,17 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore createKeyStore(String name) throws InterruptedException, ScytaleException, IOException, CertificateException {
+    public Optional<KeyStore> createKeyStore(String name) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateName(name);
 
         JSONObject createJson = new JSONObject().put(KEYSTORE_NAME_ATTR, name);
-        return fromJson(this.post(KEYSTORE_URI,createJson));
+
+        String postBody = this.post(KEYSTORE_URI, createJson);
+        if (postBody.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(fromJson(postBody));
     }
 
     /***
@@ -68,7 +85,7 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore updateKeyStore(KeyStore updated) throws InterruptedException, ScytaleException, IOException, CertificateException {
+    public Optional<KeyStore> updateKeyStore(KeyStore updated) throws InterruptedException, ScytaleException, IOException, CertificateException {
         validateID(updated.getId());
         validateName(updated.getName());
 
@@ -78,7 +95,12 @@ public class KeyStoreRequest extends ScytaleRequest {
 
         String updateURI = KEYSTORE_URI + "/" + updated.getId();
 
-        return fromJson(this.put(updateURI, updateJson));
+        String updateBody = this.put(updateURI, updateJson);
+        if (updateBody.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(fromJson(updateBody));
     }
 
     /***
@@ -91,11 +113,16 @@ public class KeyStoreRequest extends ScytaleRequest {
      * @throws InvalidKeystoreException - Could not find the the specified keystore by name
      * @throws CertificateException - Certificate authentication failed
      */
-    public KeyStore searchByName(String name) throws IOException, InterruptedException, ScytaleException, InvalidKeystoreException, CertificateException {
+    public Optional<KeyStore> searchByName(String name) throws IOException, InterruptedException, ScytaleException, InvalidKeystoreException, CertificateException {
         String searchURL = KEYSTORE_URI + "/search?name=" + name;
 
         try {
-            JSONArray foundByName = new JSONArray(this.get(searchURL));
+            String searchBody = this.get(searchURL);
+            if (searchBody.isEmpty()) {
+                return Optional.empty();
+            }
+
+            JSONArray foundByName = new JSONArray(searchBody);
             Optional<JSONObject> jsonObject = StreamSupport.stream(foundByName.spliterator(), false)
                     .map(JSONObject.class::cast)
                     .filter(o -> o.get(KeyStoreRequest.KEYSTORE_NAME_ATTR).equals(name))
@@ -105,8 +132,8 @@ public class KeyStoreRequest extends ScytaleRequest {
                 throw new InvalidKeystoreException("Keystore with name " + name + " does not exist");
             }
 
-            return new KeyStore(jsonObject.get().getLong(KEYSTORE_ID_ATTR),
-                                jsonObject.get().getString(KEYSTORE_NAME_ATTR));
+            return Optional.of(new KeyStore(jsonObject.get().getLong(KEYSTORE_ID_ATTR),
+                                            jsonObject.get().getString(KEYSTORE_NAME_ATTR)));
         } catch (JSONException jsonException) {
             LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
             throw new ScytaleException(RETURNED_INVALID_JSON);

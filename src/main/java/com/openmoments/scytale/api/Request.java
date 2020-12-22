@@ -13,6 +13,7 @@ import java.net.http.HttpResponse;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Properties;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,14 +42,13 @@ public class Request implements APIRequest {
     /***
      * Perform a HTTP GET
      * @param uri {@link String String} URI to perform GET against
-     * @param callbacks {@link APIRequestCallback APIRequestCallback} to call
      * @return A String {@link HttpResponse HttpResponse}
      * @throws IOException - If an I/O error occurs when sending or receiving
      * @throws InterruptedException - If the operation is interrupted
      * @throws CertificateException - If certificate authentication used but is invalid
      */
     @Override
-    public HttpResponse<String> get(String uri, APIRequestCallback callbacks) throws IOException, InterruptedException, CertificateException {
+    public HttpResponse<String> get(String uri) throws IOException, InterruptedException, CertificateException {
         createRequest(uri);
         apiRequestBuilder.GET();
 
@@ -56,16 +56,29 @@ public class Request implements APIRequest {
     }
 
     /***
+     * Perform a async HTTP GET
+     * @param uri {@link String String} URI to perform GET against
+     * @return A String {@link HttpResponse HttpResponse}
+     * @throws CertificateException - If certificate authentication used but is invalid
+     */
+    @Override
+    public CompletableFuture<HttpResponse<String>> getAsync(String uri) throws CertificateException {
+        createRequest(uri);
+        apiRequestBuilder.GET();
+
+        return client.sendAsync(apiRequestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    /***
      * Perform a HTTP POST
      * @param uri {@link String String} URI to perform POST against
-     * @param callbacks {@link APIRequestCallback APIRequestCallback} to call
      * @return A String {@link HttpResponse HttpResponse}
      * @throws IOException - If an I/O error occurs when sending or receiving
      * @throws InterruptedException - If the operation is interrupted
      * @throws CertificateException - If certificate authentication used but is invalid
      */
     @Override
-    public HttpResponse<String> post(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException, CertificateException {
+    public HttpResponse<String> post(String uri, JSONObject json) throws IOException, InterruptedException, CertificateException {
         createRequest(uri);
         apiRequestBuilder.POST(HttpRequest.BodyPublishers.ofString(json.toString()));
 
@@ -73,20 +86,47 @@ public class Request implements APIRequest {
     }
 
     /***
+     * Perform a async HTTP POST
+     * @param uri {@link String String} URI to perform POST against
+     * @return A String {@link HttpResponse HttpResponse}
+     * @throws CertificateException - If certificate authentication used but is invalid
+     */
+    @Override
+    public CompletableFuture<HttpResponse<String>> postAsync(String uri, JSONObject json) throws CertificateException {
+        createRequest(uri);
+        apiRequestBuilder.POST(HttpRequest.BodyPublishers.ofString(json.toString()));
+
+        return client.sendAsync(apiRequestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    /***
      * Perform a HTTP PUT
      * @param uri {@link String String} URI to perform PUT against
-     * @param callbacks {@link APIRequestCallback APIRequestCallback} to call
      * @return A String {@link HttpResponse HttpResponse}
      * @throws IOException - If an I/O error occurs when sending or receiving
      * @throws InterruptedException - If the operation is interrupted
      * @throws CertificateException - If certificate authentication used but is invalid
      */
     @Override
-    public HttpResponse<String> put(String uri, JSONObject json, APIRequestCallback callbacks) throws IOException, InterruptedException, CertificateException {
+    public HttpResponse<String> put(String uri, JSONObject json) throws IOException, InterruptedException, CertificateException {
         createRequest(uri);
         apiRequestBuilder.PUT(HttpRequest.BodyPublishers.ofString(json.toString()));
 
         return client.send(apiRequestBuilder.build(), HttpResponse.BodyHandlers.ofString());
+    }
+
+    /***
+     * Perform a async HTTP PUT
+     * @param uri {@link String String} URI to perform PUT against
+     * @return A String {@link HttpResponse HttpResponse}
+     * @throws CertificateException - If certificate authentication used but is invalid
+     */
+    @Override
+    public CompletableFuture<HttpResponse<String>> putAsync(String uri, JSONObject json) throws CertificateException {
+        createRequest(uri);
+        apiRequestBuilder.PUT(HttpRequest.BodyPublishers.ofString(json.toString()));
+
+        return client.sendAsync(apiRequestBuilder.build(), HttpResponse.BodyHandlers.ofString());
     }
 
     /***
