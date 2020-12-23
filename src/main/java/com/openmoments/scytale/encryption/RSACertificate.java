@@ -10,8 +10,8 @@ import java.security.spec.X509EncodedKeySpec;
 
 public final class RSACertificate implements AsymmetricCertificate {
 
+    protected static final String ALGORITHM = "RSA";
     private static final int DEFAULT_KEY_SIZE = 4096;
-    private static final String ALGORITHM = "RSA";
     private int keySize = DEFAULT_KEY_SIZE;
 
     /***
