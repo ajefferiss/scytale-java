@@ -12,14 +12,16 @@ public final class CertificateFactory {
             throw new IllegalArgumentException("Certificate type cannot be null");
         }
 
-        String certValue = "";
-
-        if (certificateType == CertificateType.RSA) {
-            certValue = "RSA";
-        }
-
-        if (certValue.isEmpty()) {
-            throw new IllegalArgumentException("Certificate type not set, cannot generate certificate");
+        String certValue;
+        switch (certificateType) {
+            case RSA:
+                certValue = "RSA";
+                break;
+            case ECC:
+                certValue = "ECC";
+                break;
+            default:
+                throw new IllegalArgumentException("Certificate type not set, cannot generate certificate");
         }
 
         return CertificateType.valueOf(certValue).factory.get();
