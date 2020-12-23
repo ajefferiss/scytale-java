@@ -1,9 +1,7 @@
 package com.openmoments.scytale.encryption;
 
-import com.openmoments.scytale.entities.PublicKey;
-import org.bouncycastle.jce.ECNamedCurveTable;
+import com.openmoments.scytale.entities.ScytalePublicKey;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -29,7 +27,7 @@ public class Encryptor {
     /***
      * Encrypts data
      * @param data {@link String String} data to encrypt
-     * @param publicKeyList {@link List List} of {@link PublicKey PublicKey}'s to use for encryption
+     * @param scytalePublicKeyList {@link List List} of {@link ScytalePublicKey PublicKey}'s to use for encryption
      * @return {@link String String} of encrypted data
      * @throws NoSuchPaddingException - Padding requested by not available
      * @throws NoSuchAlgorithmException - Encryption algorithm is not available
@@ -39,15 +37,15 @@ public class Encryptor {
      * @throws IllegalBlockSizeException - Block size for block cipher is incorrect
      * @throws NoSuchProviderException - Security provider is not available
      */
-    public List<String> encrypt(String data, List<PublicKey> publicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException, InvalidParameterSpecException {
+    public List<String> encrypt(String data, List<ScytalePublicKey> scytalePublicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException, InvalidParameterSpecException {
         List<String> encryptedData = new ArrayList<>();
-        if (publicKeyList.isEmpty()) {
+        if (scytalePublicKeyList.isEmpty()) {
             return encryptedData;
         }
 
         Cipher cipher;
-        for (PublicKey publicKey : publicKeyList) {
-            java.security.PublicKey tempPublicKey = getPublicKey(publicKey.getPublicKey());
+        for (ScytalePublicKey scytalePublicKey : scytalePublicKeyList) {
+            java.security.PublicKey tempPublicKey = getPublicKey(scytalePublicKey.getPublicKey());
             if (tempPublicKey.getAlgorithm().equalsIgnoreCase(RSACertificate.ALGORITHM)) {
                 cipher = Cipher.getInstance(RSA_TRANSFORMATION, PROVIDER);
             } else {

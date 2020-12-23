@@ -2,11 +2,11 @@ package com.openmoments.scytale.entities;
 
 import java.util.Objects;
 
-public final class PublicKey {
+public final class ScytalePublicKey {
     private final Long id;
     private final String publicKey;
 
-    public PublicKey(Long id, String publicKey) {
+    public ScytalePublicKey(Long id, String publicKey) {
         this.id = id;
         this.publicKey = publicKey;
     }
@@ -23,8 +23,8 @@ public final class PublicKey {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PublicKey publicKey1 = (PublicKey) o;
-        return id.equals(publicKey1.id) && publicKey.equals(publicKey1.publicKey);
+        ScytalePublicKey scytalePublicKey1 = (ScytalePublicKey) o;
+        return id.equals(scytalePublicKey1.id) && publicKey.equals(scytalePublicKey1.publicKey);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.openmoments.scytale.api;
 
 import com.openmoments.scytale.entities.KeyStore;
-import com.openmoments.scytale.entities.PublicKey;
+import com.openmoments.scytale.entities.ScytalePublicKey;
 import com.openmoments.scytale.exception.ScytaleException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,13 +33,13 @@ public class PublicKeyRequest extends ScytaleRequest {
     /***
      * Retrieve all keys associated with a keystore
      * @param keyStore {@link KeyStore KeyStore} to retriever keys for
-     * @return {@link List List} of {@link PublicKey PublicKey} items
+     * @return {@link List List} of {@link ScytalePublicKey PublicKey} items
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid list of public keys
      * @throws CertificateException - Certificate authentication failed
      */
-    public List<PublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
+    public List<ScytalePublicKey> getAll(KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String getURL = String.format(KEYS_URI_FORMAT, keyStore.getId());
 
         try {
@@ -49,7 +49,7 @@ public class PublicKeyRequest extends ScytaleRequest {
                     .collect(Collectors.toList());
 
             return jsonObjects.stream()
-                    .map(o -> new PublicKey(o.getLong(ID_ATTR), o.getString(PUBLIC_KEY_ATTR)))
+                    .map(o -> new ScytalePublicKey(o.getLong(ID_ATTR), o.getString(PUBLIC_KEY_ATTR)))
                     .collect(Collectors.toList());
         } catch (JSONException jsonException) {
             LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
@@ -58,22 +58,22 @@ public class PublicKeyRequest extends ScytaleRequest {
     }
 
     /***
-     * Add a {@link PublicKey PublicKey} to a {@link KeyStore KeyStore}
-     * @param publicKey {@link PublicKey PublicKey} to add
+     * Add a {@link ScytalePublicKey PublicKey} to a {@link KeyStore KeyStore}
+     * @param publicKey {@link ScytalePublicKey PublicKey} to add
      * @param keyStore {@link KeyStore KeyStore} to add public to
-     * @return {@link PublicKey PublicKey} returned public key from keystore
+     * @return {@link ScytalePublicKey PublicKey} returned public key from keystore
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws CertificateException - Certificate authentication failed
      */
-    public PublicKey add(String publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
+    public ScytalePublicKey add(String publicKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String addUrl = String.format(KEYS_URI_FORMAT, keyStore.getId());
         JSONObject addKeyJson = new JSONObject().put(PUBLIC_KEY_ATTR, publicKey);
 
         try {
             JSONObject createdJSON = new JSONObject(this.post(addUrl, addKeyJson));
-            return new PublicKey(createdJSON.getLong(ID_ATTR), createdJSON.getString(PUBLIC_KEY_ATTR));
+            return new ScytalePublicKey(createdJSON.getLong(ID_ATTR), createdJSON.getString(PUBLIC_KEY_ATTR));
         } catch (JSONException jsonException) {
             LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
             throw new ScytaleException(RETURNED_INVALID_JSON);
@@ -81,22 +81,22 @@ public class PublicKeyRequest extends ScytaleRequest {
     }
 
     /***
-     * Update a {@link PublicKey PublicKey}
-     * @param updatedKey {@link PublicKey PublicKey}
-     * @param keyStore {@link KeyStore KeyStore} associated with {@link PublicKey PublicKey} to update
-     * @return {@link PublicKey PublicKey} copy of the updated public key returned from the API
+     * Update a {@link ScytalePublicKey PublicKey}
+     * @param updatedKey {@link ScytalePublicKey PublicKey}
+     * @param keyStore {@link KeyStore KeyStore} associated with {@link ScytalePublicKey PublicKey} to update
+     * @return {@link ScytalePublicKey PublicKey} copy of the updated public key returned from the API
      * @throws IOException - If an I/O error occurs when sending or receiving API requests
      * @throws InterruptedException - If the API operation is interrupted
      * @throws ScytaleException - If the API did not return a valid Keystore
      * @throws CertificateException - Certificate authentication failed
      */
-    public PublicKey update(PublicKey updatedKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
+    public ScytalePublicKey update(ScytalePublicKey updatedKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String updateUrl = String.format(KEYS_URI_FORMAT, keyStore.getId()) + "/" + updatedKey.getId();
         JSONObject updateJson = new JSONObject().put(ID_ATTR, updatedKey.getId()).put(PUBLIC_KEY_ATTR, updatedKey.getPublicKey());
 
         try {
             JSONObject updatedJSON = new JSONObject(this.put(updateUrl, updateJson));
-            return new PublicKey(updatedJSON.getLong(ID_ATTR), updatedJSON.getString(PUBLIC_KEY_ATTR));
+            return new ScytalePublicKey(updatedJSON.getLong(ID_ATTR), updatedJSON.getString(PUBLIC_KEY_ATTR));
         } catch (JSONException jsonException) {
             LOG.log(Level.SEVERE, RETURNED_INVALID_JSON, jsonException);
             throw new ScytaleException(RETURNED_INVALID_JSON);

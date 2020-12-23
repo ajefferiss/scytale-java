@@ -7,9 +7,8 @@ import com.openmoments.scytale.api.Request;
 import com.openmoments.scytale.encryption.CertificateEncoder;
 import com.openmoments.scytale.encryption.CertificateFactory;
 import com.openmoments.scytale.encryption.CertificateType;
-import com.openmoments.scytale.encryption.RSACertificate;
 import com.openmoments.scytale.entities.KeyStore;
-import com.openmoments.scytale.entities.PublicKey;
+import com.openmoments.scytale.entities.ScytalePublicKey;
 import com.openmoments.scytale.exception.InvalidKeystoreException;
 import com.openmoments.scytale.exception.ScytaleException;
 
@@ -132,7 +131,7 @@ public class ExampleUsage implements APIRequestCallback {
 
     void getKeysFor(KeyStore keyStore) {
         try {
-            List<PublicKey> foundKeys = new PublicKeyRequest(new Request()).getAll(keyStore);
+            List<ScytalePublicKey> foundKeys = new PublicKeyRequest(new Request()).getAll(keyStore);
             LOG.log(Level.INFO, "Found keys: {0}", foundKeys);
         } catch (InterruptedException | ScytaleException | IOException | CertificateException e) {
             LOG.log(Level.SEVERE, "Failed to get keys", e);
@@ -144,10 +143,10 @@ public class ExampleUsage implements APIRequestCallback {
             KeyPair keyPair = new CertificateFactory().get(CertificateType.RSA).generateKeyPair();
             Map<CertificateEncoder.KeyType, String> keyMap = new CertificateEncoder().base64Encode(keyPair);
 
-            PublicKey publicKey = new PublicKeyRequest(new Request()).add(
+            ScytalePublicKey scytalePublicKey = new PublicKeyRequest(new Request()).add(
                     keyMap.get(CertificateEncoder.KeyType.PUBLIC),
                     keyStore);
-            LOG.log(Level.INFO, "Created public key {0}", publicKey);
+            LOG.log(Level.INFO, "Created public key {0}", scytalePublicKey);
         } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException | NoSuchProviderException e) {
             LOG.log(Level.SEVERE, "Failed to add key", e);
         }
