@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class CertificateEncoderTest {
 
     @Test
     @DisplayName("Should base64 encode RSA Certificate")
-    void shouldReturnRSAKeys() throws NoSuchAlgorithmException {
+    void shouldReturnRSAKeys() throws NoSuchAlgorithmException, NoSuchProviderException {
         KeyPair keyPair = new CertificateFactory().get(CertificateType.RSA).generateKeyPair();
         assertNotNull(keyPair);
 

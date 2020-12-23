@@ -14,6 +14,7 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
+import java.security.spec.InvalidParameterSpecException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ class EncryptorTest {
     class Encryption {
         @Test
         @DisplayName("Encrypt to RSA")
-        void shouldEncryptionRSA() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException {
+        void shouldEncryptionRSA() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException, InvalidParameterSpecException {
             KeyPair keyPair = rsaCertificate.generateKeyPair();
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
@@ -49,7 +50,7 @@ class EncryptorTest {
 
         @Test
         @DisplayName("Should not produce same cipher text")
-        void shouldNotProduceSameCipherText() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException {
+        void shouldNotProduceSameCipherText() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException, InvalidParameterSpecException {
             KeyPair keyPair = rsaCertificate.generateKeyPair();
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
@@ -62,7 +63,7 @@ class EncryptorTest {
 
         @Test
         @DisplayName("Should encrypt for each public key")
-        void shouldEncryptWithEachPublicKey() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException {
+        void shouldEncryptWithEachPublicKey() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException, InvalidParameterSpecException {
             KeyPair keyPair = rsaCertificate.generateKeyPair();
             KeyPair keyPair1 = rsaCertificate.generateKeyPair();
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
@@ -85,7 +86,7 @@ class EncryptorTest {
     class Decryption {
         @Test
         @DisplayName("Should decrypt text")
-        void shouldDecryptText() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException {
+        void shouldDecryptText() throws NoSuchAlgorithmException, IllegalBlockSizeException, InvalidKeyException, BadPaddingException, InvalidKeySpecException, NoSuchPaddingException, NoSuchProviderException, InvalidParameterSpecException {
             KeyPair keyPair = rsaCertificate.generateKeyPair();
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
@@ -97,7 +98,7 @@ class EncryptorTest {
 
         @Test
         @DisplayName("Should decrypt when private key base64")
-        void shouldDecryptWithStringPrivateKey() throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException {
+        void shouldDecryptWithStringPrivateKey() throws NoSuchAlgorithmException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, NoSuchProviderException, InvalidKeyException, InvalidKeySpecException, InvalidParameterSpecException {
             KeyPair keyPair = rsaCertificate.generateKeyPair();
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class ExampleUsage implements APIRequestCallback {
             publicKey.write(keyMap.get(CertificateEncoder.KeyType.PUBLIC).getBytes());
 
             LOG.log(Level.INFO, "Created private.key and public.pem under: {0}", homePath);
-        } catch (IOException | NoSuchAlgorithmException e) {
+        } catch (IOException | NoSuchAlgorithmException | NoSuchProviderException e) {
             LOG.log(Level.SEVERE, "Failed to save keys", e);
         }
     }
@@ -147,7 +148,7 @@ public class ExampleUsage implements APIRequestCallback {
                     keyMap.get(CertificateEncoder.KeyType.PUBLIC),
                     keyStore);
             LOG.log(Level.INFO, "Created public key {0}", publicKey);
-        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException e) {
+        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException | NoSuchProviderException e) {
             LOG.log(Level.SEVERE, "Failed to add key", e);
         }
     }
