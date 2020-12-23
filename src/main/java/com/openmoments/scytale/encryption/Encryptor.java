@@ -45,14 +45,13 @@ public class Encryptor {
 
         Cipher cipher;
         for (ScytalePublicKey scytalePublicKey : scytalePublicKeyList) {
-            java.security.PublicKey tempPublicKey = getPublicKey(scytalePublicKey.getPublicKey());
-            if (tempPublicKey.getAlgorithm().equalsIgnoreCase(RSACertificate.ALGORITHM)) {
+            if (scytalePublicKey.getPublicKey().getAlgorithm().equalsIgnoreCase(RSACertificate.ALGORITHM)) {
                 cipher = Cipher.getInstance(RSA_TRANSFORMATION, PROVIDER);
             } else {
                 cipher = Cipher.getInstance(ECC_TRANSFORMATION, PROVIDER);
             }
 
-            cipher.init(Cipher.ENCRYPT_MODE, tempPublicKey);
+            cipher.init(Cipher.ENCRYPT_MODE, scytalePublicKey.getPublicKey());
             byte[] encByte = cipher.doFinal(data.getBytes());
 
             encryptedData.add(Base64.getEncoder().encodeToString(encByte));
