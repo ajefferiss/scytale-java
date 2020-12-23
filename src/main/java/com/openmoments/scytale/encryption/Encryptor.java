@@ -1,16 +1,17 @@
 package com.openmoments.scytale.encryption;
 
 import com.openmoments.scytale.entities.PublicKey;
+import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.jce.spec.ECNamedCurveParameterSpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.math.BigInteger;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -38,21 +39,22 @@ public class Encryptor {
      * @throws IllegalBlockSizeException - Block size for block cipher is incorrect
      * @throws NoSuchProviderException - Security provider is not available
      */
-    public List<String> encrypt(String data, List<PublicKey> publicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException {
+    public List<String> encrypt(String data, List<PublicKey> publicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException, InvalidParameterSpecException {
         List<String> encryptedData = new ArrayList<>();
         if (publicKeyList.isEmpty()) {
             return encryptedData;
         }
 
         Cipher cipher;
-        if (publicKeyList.get(0).getPublicKey().equals("RSA")) {
-            cipher = Cipher.getInstance(RSA_TRANSFORMATION, PROVIDER);
-        } else {
-            cipher = Cipher.getInstance(ECC_TRANSFORMATION, PROVIDER);
-        }
-        
         for (PublicKey publicKey : publicKeyList) {
-            cipher.init(Cipher.ENCRYPT_MODE, getKey(publicKey.getPublicKey()));
+            java.security.PublicKey tempPublicKey = getPublicKey(publicKey.getPublicKey());
+            if (tempPublicKey.getAlgorithm().equalsIgnoreCase(RSACertificate.ALGORITHM)) {
+                cipher = Cipher.getInstance(RSA_TRANSFORMATION, PROVIDER);
+            } else {
+                cipher = Cipher.getInstance(ECC_TRANSFORMATION, PROVIDER);
+            }
+
+            cipher.init(Cipher.ENCRYPT_MODE, tempPublicKey);
             byte[] encByte = cipher.doFinal(data.getBytes());
 
             encryptedData.add(Base64.getEncoder().encodeToString(encByte));
@@ -102,7 +104,23 @@ public class Encryptor {
         return decrypt(data, getPrivateKey(base64PrivateKey));
     }
 
-    private java.security.PublicKey getKey(String key) throws InvalidKeySpecException, NoSuchAlgorithmException {
+    private java.security.PublicKey getPublicKey(String key) throws NoSuchAlgorithmException, InvalidParameterSpecException, InvalidKeySpecException, NoSuchProviderException {
+        try {
+            return getRSAPublicKey(key);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            return getECCPublicKey(key);
+        }
+    }
+
+    private java.security.PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
+        try {
+            return getRSAPrivateKey(key);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            return getECCPrivateKey(key);
+        }
+    }
+
+    private java.security.PublicKey getRSAPublicKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
         key = new CertificateEncoder().stripHeaderFooter(key);
         key = key.replace("\n", "");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(key.getBytes()));
@@ -110,7 +128,7 @@ public class Encryptor {
         return keyFactory.generatePublic(keySpec);
     }
 
-    private java.security.PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
+    private java.security.PrivateKey getRSAPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
         key = new CertificateEncoder().stripHeaderFooter(key);
         key = key.replace("\n", "");
 
@@ -118,5 +136,24 @@ public class Encryptor {
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
         return keyFactory.generatePrivate(keySpec);
+    }
+
+    private java.security.PublicKey getECCPublicKey(String key) throws InvalidParameterSpecException, NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+        String hexX = key.substring(0, 32);
+        String hexY = key.substring(32);
+        ECPoint point = new ECPoint(new BigInteger(hexX, 16), new BigInteger(hexY, 16));
+
+        AlgorithmParameters parameters = AlgorithmParameters.getInstance(ECCCertificate.ALGORITHM, PROVIDER);
+        parameters.init(new ECGenParameterSpec(ECCCertificate.EC_GEN_PARAMETER_SPEC));
+        ECParameterSpec ecParameters = parameters.getParameterSpec(ECParameterSpec.class);
+        ECPublicKeySpec pubKeySpec = new ECPublicKeySpec(point, ecParameters);
+
+        return KeyFactory.getInstance(ECCCertificate.ALGORITHM, PROVIDER).generatePublic(pubKeySpec);
+    }
+
+    private java.security.PrivateKey getECCPrivateKey(String key) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeySpecException {
+        KeyFactory kf = KeyFactory.getInstance(ECCCertificate.ALGORITHM, PROVIDER);
+        byte[] bytes = Base64.getDecoder().decode(key);
+        return kf.generatePrivate(new PKCS8EncodedKeySpec(bytes));
     }
 }

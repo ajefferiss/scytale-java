@@ -11,9 +11,9 @@ import java.security.spec.InvalidKeySpecException;
 
 public final class ECCCertificate implements AsymmetricCertificate {
     protected static final String ALGORITHM = "EC";
+    protected static final String EC_GEN_PARAMETER_SPEC = "brainpoolP384r1";
     private static final int DEFAULT_KEY_SIZE = -1;
     private static final String PROVIDER = "BC";
-    private static final String EC_GEN_PARAMETER_SPEC = "brainpoolP384r1";
     private int keySize = DEFAULT_KEY_SIZE;
 
     ECCCertificate() {
