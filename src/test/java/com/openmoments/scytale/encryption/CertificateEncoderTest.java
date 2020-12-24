@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Certificate Encoder")
 class CertificateEncoderTest {
+
+    //TODO: Add ECC Tests
 
     private CertificateEncoder certificateEncoder;
 
@@ -29,7 +32,7 @@ class CertificateEncoderTest {
 
     @Test
     @DisplayName("Should base64 encode RSA Certificate")
-    void shouldReturnRSAKeys() throws NoSuchAlgorithmException, NoSuchProviderException {
+    void shouldReturnRSAKeys() throws Exception {
         KeyPair keyPair = new CertificateFactory().get(CertificateType.RSA).generateKeyPair();
         assertNotNull(keyPair);
 
@@ -49,5 +52,18 @@ class CertificateEncoderTest {
         assertTrue(publicKey.startsWith(CertificateEncoder.RSA_PUBLIC_HEADER));
         assertTrue(publicKey.endsWith(CertificateEncoder.RSA_PUBLIC_FOOTER));
         assertTrue(publicKey.length() >= 800);
+    }
+
+    @Test
+    @DisplayName("Should base64 encode ECC Certificate")
+    void shouldReturnECCKeys() throws Exception {
+        KeyPair keyPair = new CertificateFactory().get(CertificateType.ECC).generateKeyPair();
+        assertNotNull(keyPair);
+
+        Map<CertificateEncoder.KeyType, String> encodedKeys = certificateEncoder.base64Encode(keyPair);
+
+        assertEquals(2, encodedKeys.size());
+        assertNotEquals("", encodedKeys.get(CertificateEncoder.KeyType.PRIVATE));
+        assertNotEquals("", encodedKeys.get(CertificateEncoder.KeyType.PUBLIC));
     }
 }

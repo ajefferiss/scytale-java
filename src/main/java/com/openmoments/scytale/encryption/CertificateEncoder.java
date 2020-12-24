@@ -1,6 +1,7 @@
 package com.openmoments.scytale.encryption;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.*;
 
@@ -32,20 +33,19 @@ public final class CertificateEncoder {
             return new EnumMap<>(KeyType.class);
         }
 
-        StringBuilder certificateBuilder = new StringBuilder();
-        String base64String = base64Encoder.encodeToString(keyPair.getPrivate().getEncoded());
+        if (keyPair.getPrivate().getAlgorithm().equalsIgnoreCase("RSA")) {
+            return encodeRSAKeys(keyPair);
+        } else if (keyPair.getPrivate().getAlgorithm().equalsIgnoreCase("EC")) {
+            return encodeECKeys(keyPair);
+        }
 
-        /*
-         * A RSA certificate needs line breaks every 67 characters, so add those with the replaceAll below
-         */
-        certificateBuilder.append(RSA_PRIVATE_HEADER);
-        certificateBuilder.append("\n");
-        certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
-        certificateBuilder.append("\n");
-        certificateBuilder.append(RSA_PRIVATE_FOOTER);
-        encodedKeys.put(KeyType.PRIVATE, certificateBuilder.toString());
+        return encodedKeys;
+    }
 
-        encodedKeys.put(KeyType.PUBLIC, base64EncodePublicKey(keyPair.getPublic()));
+    private Map<KeyType, String> encodeECKeys(KeyPair keyPair) {
+        Map<KeyType, String> encodedKeys = new EnumMap<>(KeyType.class);
+        encodedKeys.put(KeyType.PRIVATE, base64Encoder.encodeToString(keyPair.getPrivate().getEncoded()));
+        encodedKeys.put(KeyType.PUBLIC, base64Encoder.encodeToString(keyPair.getPublic().getEncoded()));
 
         return encodedKeys;
     }
@@ -58,6 +58,32 @@ public final class CertificateEncoder {
     public String stripHeaderFooter(String key) {
         return key.replace(RSA_PUBLIC_HEADER, "").replace(RSA_PUBLIC_FOOTER, "")
                 .replace(RSA_PRIVATE_HEADER, "").replace(RSA_PRIVATE_FOOTER, "");
+    }
+
+    private Map<KeyType, String> encodeRSAKeys(KeyPair keyPair) {
+        Map<KeyType, String> encodedKeys = new EnumMap<>(KeyType.class);
+
+        encodedKeys.put(KeyType.PRIVATE, base64EncodeRSAPrivate(keyPair.getPrivate()));
+        encodedKeys.put(KeyType.PUBLIC, base64EncodePublicKey(keyPair.getPublic()));
+
+        return encodedKeys;
+    }
+
+    /***
+     *
+     * @param privateKey
+     * @return
+     */
+    private String base64EncodeRSAPrivate(PrivateKey privateKey) {
+        StringBuilder certificateBuilder = new StringBuilder();
+        String base64String = base64Encoder.encodeToString(privateKey.getEncoded());
+        certificateBuilder.append(RSA_PRIVATE_HEADER);
+        certificateBuilder.append("\n");
+        certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
+        certificateBuilder.append("\n");
+        certificateBuilder.append(RSA_PRIVATE_FOOTER);
+
+        return certificateBuilder.toString();
     }
 
     /***
@@ -73,6 +99,7 @@ public final class CertificateEncoder {
         certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
         certificateBuilder.append("\n");
         certificateBuilder.append(RSA_PUBLIC_FOOTER);
+
         return certificateBuilder.toString();
     }
 }
