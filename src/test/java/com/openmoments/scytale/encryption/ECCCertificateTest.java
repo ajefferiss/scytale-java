@@ -12,7 +12,7 @@ import java.security.KeyPair;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("ECC Certificate")
+@DisplayName("EC Certificate")
 class ECCCertificateTest {
 
     @Test
@@ -20,8 +20,8 @@ class ECCCertificateTest {
     void shouldGenerateKeyPair() throws Exception {
         KeyPair keyPair = new ECCCertificate().generateKeyPair();
 
-        assertEquals("ECDH", keyPair.getPrivate().getAlgorithm());
-        assertEquals("ECDH", keyPair.getPublic().getAlgorithm());
+        assertEquals("EC", keyPair.getPrivate().getAlgorithm());
+        assertEquals("EC", keyPair.getPublic().getAlgorithm());
     }
 
     @Test
@@ -55,7 +55,7 @@ class ECCCertificateTest {
 
         assertNotNull(loadedPair);
         assertNotEquals(0, loadedPair.getPrivate().getEncoded().length);
-        assertEquals("ECDH", loadedPair.getPublic().getAlgorithm());
+        assertEquals("EC", loadedPair.getPublic().getAlgorithm());
         assertNotEquals(0, loadedPair.getPublic().getEncoded().length);
     }
 }

@@ -9,7 +9,7 @@ import java.security.*;
 import java.security.spec.*;
 
 public final class ECCCertificate implements AsymmetricCertificate {
-    protected static final String ALGORITHM = "ECDH";
+    protected static final String ALGORITHM = "EC";
     protected static final String EC_GEN_PARAMETER_SPEC = "secp256r1";
     private static final int DEFAULT_KEY_SIZE = -1;
     private static final String PROVIDER = "BC";
