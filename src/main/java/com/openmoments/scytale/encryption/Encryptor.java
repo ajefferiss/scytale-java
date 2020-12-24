@@ -31,13 +31,12 @@ public class Encryptor {
      * @return {@link String String} of encrypted data
      * @throws NoSuchPaddingException - Padding requested by not available
      * @throws NoSuchAlgorithmException - Encryption algorithm is not available
-     * @throws InvalidKeySpecException - Key specifications are invalid
      * @throws InvalidKeyException - Key invalid (invalid encoding, wrong length, uninitialized, etc).
      * @throws BadPaddingException - Input data is not correctly padding for selected padding mechanism
      * @throws IllegalBlockSizeException - Block size for block cipher is incorrect
      * @throws NoSuchProviderException - Security provider is not available
      */
-    public List<String> encrypt(String data, List<ScytalePublicKey> scytalePublicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException, InvalidParameterSpecException {
+    public List<String> encrypt(String data, List<ScytalePublicKey> scytalePublicKeyList) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException, NoSuchProviderException {
         List<String> encryptedData = new ArrayList<>();
         if (scytalePublicKeyList.isEmpty()) {
             return encryptedData;
@@ -99,14 +98,6 @@ public class Encryptor {
      */
     public String decrypt(String data, String base64PrivateKey) throws IllegalBlockSizeException, InvalidKeyException, BadPaddingException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException, NoSuchProviderException {
         return decrypt(data, getPrivateKey(base64PrivateKey));
-    }
-
-    private java.security.PublicKey getPublicKey(String key) throws NoSuchAlgorithmException, InvalidParameterSpecException, InvalidKeySpecException, NoSuchProviderException {
-        try {
-            return getRSAPublicKey(key);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            return getECCPublicKey(key);
-        }
     }
 
     private java.security.PrivateKey getPrivateKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchProviderException {
