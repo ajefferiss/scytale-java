@@ -15,6 +15,7 @@ import com.openmoments.scytale.exception.ScytaleException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -71,7 +72,7 @@ public class ExampleUsage implements APIRequestCallback {
             publicKey.write(keyMap.get(CertificateEncoder.KeyType.PUBLIC).getBytes());
 
             LOG.log(Level.INFO, "Created private.key and public.pem under: {0}", homePath);
-        } catch (IOException | NoSuchAlgorithmException | NoSuchProviderException e) {
+        } catch (IOException | NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             LOG.log(Level.SEVERE, "Failed to save keys", e);
         }
     }
@@ -147,7 +148,7 @@ public class ExampleUsage implements APIRequestCallback {
                     keyMap.get(CertificateEncoder.KeyType.PUBLIC),
                     keyStore);
             LOG.log(Level.INFO, "Created public key {0}", scytalePublicKey);
-        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException | NoSuchProviderException e) {
+        } catch (NoSuchAlgorithmException | IOException | InterruptedException | ScytaleException | CertificateException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
             LOG.log(Level.SEVERE, "Failed to add key", e);
         }
     }
