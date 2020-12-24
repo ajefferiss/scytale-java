@@ -1,5 +1,6 @@
 package com.openmoments.scytale.api;
 
+import com.openmoments.scytale.encryption.CertificateEncoder;
 import com.openmoments.scytale.entities.KeyStore;
 import com.openmoments.scytale.entities.ScytalePublicKey;
 import com.openmoments.scytale.exception.ScytaleException;
@@ -92,7 +93,8 @@ public class PublicKeyRequest extends ScytaleRequest {
      */
     public ScytalePublicKey update(ScytalePublicKey updatedKey, KeyStore keyStore) throws IOException, InterruptedException, ScytaleException, CertificateException {
         String updateUrl = String.format(KEYS_URI_FORMAT, keyStore.getId()) + "/" + updatedKey.getId();
-        JSONObject updateJson = new JSONObject().put(ID_ATTR, updatedKey.getId()).put(PUBLIC_KEY_ATTR, updatedKey.getPublicKey());
+        String publicKey = new CertificateEncoder().base64EncodePublicKey(updatedKey.getPublicKey());
+        JSONObject updateJson = new JSONObject().put(ID_ATTR, updatedKey.getId()).put(PUBLIC_KEY_ATTR, publicKey);
 
         try {
             JSONObject updatedJSON = new JSONObject(this.put(updateUrl, updateJson));
