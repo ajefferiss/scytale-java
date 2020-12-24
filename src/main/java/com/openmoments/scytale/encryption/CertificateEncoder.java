@@ -1,14 +1,15 @@
 package com.openmoments.scytale.encryption;
 
 import java.security.KeyPair;
+import java.security.PublicKey;
 import java.util.*;
 
 public final class CertificateEncoder {
 
-    protected static final String RSA_PRIVATE_HEADER = "-----BEGIN RSA PRIVATE KEY-----\n";
-    protected static final String RSA_PRIVATE_FOOTER = "\n-----END RSA PRIVATE KEY-----\n";
-    protected static final String RSA_PUBLIC_HEADER = "-----BEGIN RSA PUBLIC KEY-----\n";
-    protected static final String RSA_PUBLIC_FOOTER = "\n-----END RSA PUBLIC KEY-----\n";
+    protected static final String RSA_PRIVATE_HEADER = "-----BEGIN RSA PRIVATE KEY-----";
+    protected static final String RSA_PRIVATE_FOOTER = "-----END RSA PRIVATE KEY-----";
+    protected static final String RSA_PUBLIC_HEADER = "-----BEGIN RSA PUBLIC KEY-----";
+    protected static final String RSA_PUBLIC_FOOTER = "-----END RSA PUBLIC KEY-----";
 
     private static final int RSA_LINE_LENGTH = 67;
     private static final String RSA_LINE_REGEX = "(.{"+RSA_LINE_LENGTH+"})";
@@ -38,22 +39,40 @@ public final class CertificateEncoder {
          * A RSA certificate needs line breaks every 67 characters, so add those with the replaceAll below
          */
         certificateBuilder.append(RSA_PRIVATE_HEADER);
+        certificateBuilder.append("\n");
         certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
+        certificateBuilder.append("\n");
         certificateBuilder.append(RSA_PRIVATE_FOOTER);
         encodedKeys.put(KeyType.PRIVATE, certificateBuilder.toString());
 
-        certificateBuilder.setLength(0);
-        base64String = base64Encoder.encodeToString(keyPair.getPublic().getEncoded());
-        certificateBuilder.append(RSA_PUBLIC_HEADER);
-        certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
-        certificateBuilder.append(RSA_PUBLIC_FOOTER);
-        encodedKeys.put(KeyType.PUBLIC, certificateBuilder.toString());
+        encodedKeys.put(KeyType.PUBLIC, base64EncodePublicKey(keyPair.getPublic()));
 
         return encodedKeys;
     }
 
+    /***
+     *
+     * @param key
+     * @return
+     */
     public String stripHeaderFooter(String key) {
         return key.replace(RSA_PUBLIC_HEADER, "").replace(RSA_PUBLIC_FOOTER, "")
                 .replace(RSA_PRIVATE_HEADER, "").replace(RSA_PRIVATE_FOOTER, "");
+    }
+
+    /***
+     *
+     * @param publicKey
+     * @return
+     */
+    public String base64EncodePublicKey(PublicKey publicKey) {
+        StringBuilder certificateBuilder = new StringBuilder();
+        String base64String = base64Encoder.encodeToString(publicKey.getEncoded());
+        certificateBuilder.append(RSA_PUBLIC_HEADER);
+        certificateBuilder.append("\n");
+        certificateBuilder.append(base64String.replaceAll(RSA_LINE_REGEX, "$1\n"));
+        certificateBuilder.append("\n");
+        certificateBuilder.append(RSA_PUBLIC_FOOTER);
+        return certificateBuilder.toString();
     }
 }
