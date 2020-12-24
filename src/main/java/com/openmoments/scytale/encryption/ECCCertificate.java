@@ -20,11 +20,11 @@ public final class ECCCertificate implements AsymmetricCertificate {
     }
 
     /***
-     * Generate a ECDH KeyPair
+     * Generate a EC KeyPair
      * @return {@link KeyPair KeyPair}
-     * @throws NoSuchAlgorithmException - if a ECDH instance cannot be created
+     * @throws NoSuchAlgorithmException - if a EC instance cannot be created
      * @throws NoSuchProviderException - if the Security Provider does not exist
-     * @throws InvalidAlgorithmParameterException - If the ECDH generation algorithm does not exist
+     * @throws InvalidAlgorithmParameterException - If the EC generation algorithm does not exist
      */
     @Override
     public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
@@ -45,7 +45,7 @@ public final class ECCCertificate implements AsymmetricCertificate {
      * @param privateKeyOutputStream - Output stream for the private key
      * @param publicKeyOutputStream - Output stream for the public key
      * @throws IOException - Indicates an error writing to a output stream
-     * @throws NoSuchAlgorithmException - if a ECDH instance cannot be created
+     * @throws NoSuchAlgorithmException - if a EC instance cannot be created
      */
     @Override
     public void toStream(OutputStream privateKeyOutputStream, OutputStream publicKeyOutputStream) throws IOException, NoSuchAlgorithmException {
@@ -64,8 +64,8 @@ public final class ECCCertificate implements AsymmetricCertificate {
      * @param publicKeyInputStream - Public Key {@link InputStream InputStream}
      * @return {@link KeyPair KeyPair}
      * @throws IOException - if there is an error reading from the input stream
-     * @throws NoSuchAlgorithmException - if a ECDH certificate instance could not be created
-     * @throws InvalidKeySpecException - if the ECDH key was invalid
+     * @throws NoSuchAlgorithmException - if a EC certificate instance could not be created
+     * @throws InvalidKeySpecException - if the EC key was invalid
      */
     @Override
     public KeyPair fromStream(InputStream privateKeyInputStream, InputStream publicKeyInputStream) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
