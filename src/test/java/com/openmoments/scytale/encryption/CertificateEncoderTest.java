@@ -15,8 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Certificate Encoder")
 class CertificateEncoderTest {
 
-    //TODO: Add ECC Tests
-
     private CertificateEncoder certificateEncoder;
 
     @BeforeEach
