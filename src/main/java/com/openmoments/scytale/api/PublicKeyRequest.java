@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.logging.Level;

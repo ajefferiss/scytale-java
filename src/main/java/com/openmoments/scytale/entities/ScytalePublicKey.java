@@ -3,13 +3,10 @@ package com.openmoments.scytale.entities;
 import com.openmoments.scytale.encryption.CertificateEncoder;
 import com.openmoments.scytale.encryption.CertificateType;
 
-import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
 import java.util.Objects;
 
 public final class ScytalePublicKey {
