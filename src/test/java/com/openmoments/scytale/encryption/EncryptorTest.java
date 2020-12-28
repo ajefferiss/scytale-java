@@ -38,13 +38,12 @@ class EncryptorTest {
 
             List<ScytalePublicKey> scytalePublicKeys = new ArrayList<>();
 
-            List<String> rsaCipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
-            List<String> eccCipherText = encryptor.eccEncrypt("Test", eccKeyPair.getPrivate(), scytalePublicKeys);
+            List<String> rsaCipherText = encryptor.encrypt("Test", rsaKeyPair.getPrivate(), scytalePublicKeys);
+            List<String> eccCipherText = encryptor.encrypt("Test", eccKeyPair.getPrivate(), scytalePublicKeys);
 
             assertEquals(0, rsaCipherText.size());
             assertEquals(0, eccCipherText.size());
         }
-
 
         @Test
         @DisplayName("Encrypt to RSA")
@@ -53,7 +52,7 @@ class EncryptorTest {
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
             List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
 
             assertEquals(1, cipherText.size());
             assertNotEquals("Test", cipherText.get(0));
@@ -66,7 +65,7 @@ class EncryptorTest {
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
             List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.eccEncrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
 
             assertEquals(1, cipherText.size());
             assertNotEquals("Test", cipherText.get(0));
@@ -79,8 +78,8 @@ class EncryptorTest {
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
             List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
-            List<String> cipherText2 = encryptor.rsaEncrypt("Test", scytalePublicKeys);
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
+            List<String> cipherText2 = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
 
             assertNotEquals(cipherText2.get(0), cipherText.get(0));
         }
@@ -98,7 +97,7 @@ class EncryptorTest {
                 new ScytalePublicKey(1L, encodedKeys1.get(CertificateEncoder.KeyType.PUBLIC))
             );
 
-            List<String> cipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
 
             assertEquals(2, cipherText.size());
             assertNotEquals(cipherText.get(0), cipherText.get(1));
@@ -115,9 +114,9 @@ class EncryptorTest {
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
             List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
 
-            assertEquals("Test", encryptor.rsaDecrypt(cipherText.get(0), keyPair.getPrivate()));
+            assertEquals("Test", encryptor.decrypt(cipherText.get(0), keyPair.getPrivate(), scytalePublicKeys));
         }
 
         @Test
@@ -127,20 +126,8 @@ class EncryptorTest {
             Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
 
             List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.eccEncrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
-            assertEquals("Test", encryptor.eccDecrypt(cipherText.get(0), keyPair.getPrivate(), scytalePublicKeys));
-        }
-
-        @Test
-        @DisplayName("Should decrypt when private key base64")
-        void shouldDecryptWithStringPrivateKey() throws Exception {
-            KeyPair keyPair = rsaCertificate.generateKeyPair();
-            Map<CertificateEncoder.KeyType, String> encodedKeys = new CertificateEncoder().base64Encode(keyPair);
-
-            List<ScytalePublicKey> scytalePublicKeys = List.of(new ScytalePublicKey(1L, encodedKeys.get(CertificateEncoder.KeyType.PUBLIC)));
-            List<String> cipherText = encryptor.rsaEncrypt("Test", scytalePublicKeys);
-
-            assertEquals("Test", encryptor.rsaDecrypt(cipherText.get(0), encodedKeys.get(CertificateEncoder.KeyType.PRIVATE)));
+            List<String> cipherText = encryptor.encrypt("Test", keyPair.getPrivate(), scytalePublicKeys);
+            assertEquals("Test", encryptor.decrypt(cipherText.get(0), keyPair.getPrivate(), scytalePublicKeys));
         }
     }
 }
