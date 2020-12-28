@@ -1,9 +1,11 @@
 package com.openmoments.scytale.entities;
 
 import com.openmoments.scytale.encryption.CertificateEncoder;
+import com.openmoments.scytale.encryption.CertificateType;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
@@ -46,18 +48,16 @@ public final class ScytalePublicKey {
     }
 
     private PublicKey getPublicKeyFromBase64(String key) {
+        CertificateEncoder certificateEncoder = new CertificateEncoder();
         try {
-            return getRSAPublicKey(key);
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
-            return null;
+            return certificateEncoder.base64DecodePublicKey(key, CertificateType.RSA);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | NoSuchProviderException e) {
+            try {
+                return certificateEncoder.base64DecodePublicKey(key, CertificateType.ECC);
+            } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidKeySpecException noSuchAlgorithmException) {
+                return null;
+            }
         }
-    }
 
-    private PublicKey getRSAPublicKey(String key) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        key = new CertificateEncoder().stripHeaderFooter(key);
-        key = key.replace("\n", "");
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.getDecoder().decode(key.getBytes()));
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-        return keyFactory.generatePublic(keySpec);
     }
 }

@@ -4,10 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+import java.security.*;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,5 +60,39 @@ class CertificateEncoderTest {
         assertEquals(2, encodedKeys.size());
         assertNotEquals("", encodedKeys.get(CertificateEncoder.KeyType.PRIVATE));
         assertNotEquals("", encodedKeys.get(CertificateEncoder.KeyType.PUBLIC));
+    }
+
+    @Test
+    @DisplayName("Should Base64 decode RSA Certificate")
+    void shouldBase64DecodeRSA() throws Exception {
+        KeyPair keyPair = new CertificateFactory().get(CertificateType.RSA).generateKeyPair();
+        assertNotNull(keyPair);
+
+        Map<CertificateEncoder.KeyType, String> encodedKeys = certificateEncoder.base64Encode(keyPair);
+
+        PrivateKey privateKey = certificateEncoder.base64DecodePrivateKey(encodedKeys.get(CertificateEncoder.KeyType.PRIVATE), CertificateType.RSA);
+        PublicKey publicKey = certificateEncoder.base64DecodePublicKey(encodedKeys.get(CertificateEncoder.KeyType.PUBLIC), CertificateType.RSA);
+
+        assertNotNull(privateKey);
+        assertNotNull(publicKey);
+        assertEquals(keyPair.getPrivate(), privateKey);
+        assertEquals(keyPair.getPublic(), publicKey);
+    }
+
+    @Test
+    @DisplayName("Should Base64 decode ECC Certificate")
+    void shouldBase64DecodeECC() throws Exception {
+        KeyPair keyPair = new CertificateFactory().get(CertificateType.ECC).generateKeyPair();
+        assertNotNull(keyPair);
+
+        Map<CertificateEncoder.KeyType, String> encodedKeys = certificateEncoder.base64Encode(keyPair);
+
+        PrivateKey privateKey = certificateEncoder.base64DecodePrivateKey(encodedKeys.get(CertificateEncoder.KeyType.PRIVATE), CertificateType.ECC);
+        PublicKey publicKey = certificateEncoder.base64DecodePublicKey(encodedKeys.get(CertificateEncoder.KeyType.PUBLIC), CertificateType.ECC);
+
+        assertNotNull(privateKey);
+        assertNotNull(publicKey);
+        assertEquals(keyPair.getPrivate(), privateKey);
+        assertEquals(keyPair.getPublic(), publicKey);
     }
 }

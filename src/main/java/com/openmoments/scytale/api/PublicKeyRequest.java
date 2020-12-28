@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +29,11 @@ public class PublicKeyRequest extends ScytaleRequest {
      * @throws IllegalArgumentException - if the APIRequest is invalid
      */
     public PublicKeyRequest(APIRequest apiRequest) {
-        super(apiRequest);
+        this(apiRequest, null);
+    }
+
+    public PublicKeyRequest(APIRequest apiRequest, APIRequestCallback apiRequestCallback) {
+        super(apiRequest, apiRequestCallback);
     }
 
     /***
