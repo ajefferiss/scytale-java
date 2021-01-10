@@ -24,3 +24,10 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+jar {
+    exclude('*.p12', '*.jks', '*.properties')
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

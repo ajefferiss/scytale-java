@@ -39,6 +39,10 @@ public class Request implements APIRequest {
         properties = new PropertiesLoader().getProperties();
     }
 
+    public Request(String propertiesPath) throws IOException {
+        properties = new PropertiesLoader().file(propertiesPath).getProperties();
+    }
+
     /***
      * Perform a HTTP GET
      * @param uri {@link String String} URI to perform GET against
